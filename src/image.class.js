@@ -74,6 +74,12 @@
 		 */
 		load: function(){
 			
+			var imgs = this.refObj.getElementsByTagName('img'), video = false;
+
+			if (imgs.length){
+				video = imgs[0].getAttribute('data-video');
+			}
+
 			this.imageEl.originalSrc = Util.coalesce(this.imageEl.originalSrc, '');
 			
 			if (this.imageEl.originalSrc === this.src){
@@ -103,7 +109,8 @@
 			this.imageEl.onabort = this.imageErrorHandler;
 			this.imageEl.originalSrc = this.src;
 			this.imageEl.src = this.src;
-			
+			this.imageEl.setAttribute('data-video', video);
+
 		},
 		
 		

@@ -166,8 +166,10 @@
 		 */
 		resetPosition: function(){
 			
-			var width, height, top, itemWidth, itemEls, contentWidth, i, j, itemEl, imageEl;
 			
+			var width, height, top, itemWidth, itemEls, contentWidth, i, j, itemEl, imageEl, iframeEl,
+				styles = ['width', 'height', 'top', 'left'], s, diff, toolbar, caption, toolbarHeight, captionHeight;
+
 			if (this.settings.target === window){
 				width = Util.DOM.windowWidth();
 				height = Util.DOM.windowHeight();
@@ -209,11 +211,33 @@
 				});
 				
 				// If an item has an image then resize that
-				imageEl = Util.DOM.find('img', itemEl)[0];
+				imageEl = Util.DOM.find('img', itemEls[i])[0];
 				if (!Util.isNothing(imageEl)){
 					this.resetImagePosition(imageEl);
 				}
 				
+				// If an item has an iframe then resize that
+				iframeEl = Util.DOM.find('iframe', itemEls[i])[0];
+				if (!Util.isNothing(iframeEl)){
+					// Copy styles from image
+					for (s=0; s<styles.length; s++){
+						iframeEl.style[styles[s]] = imageEl.style[styles[s]];
+					}
+
+					toolbar = this.el.nextSibling.nextSibling;
+					caption = toolbar.nextSibling;
+					toolbarHeight = this.el.getBoundingClientRect().height - toolbar.getBoundingClientRect().top + 5;
+					captionHeight = caption.getElementsByTagName('div')[0].getBoundingClientRect().height + 5;
+
+					if ((toolbarHeight + captionHeight) > 0){
+						iframeEl.style.height = (iframeEl.getBoundingClientRect().height -
+							toolbarHeight - captionHeight) + 'px';
+						iframeEl.style.top = (iframeEl.getBoundingClientRect().top + captionHeight) + 'px';
+					}
+					for (s in styles){
+						imageEl.style[styles[s]] = iframeEl.style[styles[s]];
+					}
+				}
 			}
 			
 			this.setContentLeftPosition();

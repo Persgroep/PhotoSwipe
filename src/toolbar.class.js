@@ -290,6 +290,10 @@
 		 */
 		fadeOut: function(){
 		
+			if (!this.settings.captionAndToolbarAutoHideOnTap){
+				return;
+			}
+
 			this.clearTimeout();
 			
 			Util.Events.fire(this, { 

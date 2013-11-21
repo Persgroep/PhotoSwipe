@@ -51,6 +51,7 @@
 		toolbarHideHandler: null,
 		mouseWheelHandler: null,
 		zoomPanRotateTransformHandler: null,
+		videoThumbToEmbedCodeHandler: null,
 		
 		
 		_isResettingPosition: null,
@@ -78,7 +79,7 @@
 			Util.Events.remove(this, PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide);
 			Util.Events.remove(this, PhotoSwipe.EventTypes.onCaptionAndToolbarHide);
 			Util.Events.remove(this, PhotoSwipe.EventTypes.onZoomPanRotateTransform);
-			
+
 			
 			this.removeEventHandlers();
 			
@@ -179,6 +180,7 @@
 				captionAndToolbarHide: false,
 				captionAndToolbarFlipPosition: false,
 				captionAndToolbarAutoHideDelay: 5000,
+				captionAndToolbarAutoHideOnTap: true,
 				captionAndToolbarOpacity: 0.8,
 				captionAndToolbarShowEmptyCaptions: true,
 				getToolbar: PhotoSwipe.Toolbar.getToolbar,
@@ -392,7 +394,7 @@
 				this.toolbarHideHandler = this.onToolbarHide.bind(this);
 				this.mouseWheelHandler = this.onMouseWheel.bind(this);
 				this.zoomPanRotateTransformHandler = this.onZoomPanRotateTransform.bind(this);
-				
+				this.videoThumbToEmbedCodeHandler = this.onTouchVideoThumbToEmbedCode.bind(this);
 			}
 			
 			// Set window handlers
@@ -452,7 +454,9 @@
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onBeforeHide, this.toolbarBeforeHideHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onHide, this.toolbarHideHandler);
 			}
-		
+
+			Util.Events.add(this, PhotoSwipe.EventTypes.onTouch, this.videoThumbToEmbedCodeHandler);
+
 		},
 		
 		
@@ -1284,6 +1288,48 @@
 				translateY: e.translateY
 			});
 			
+		},
+
+		onTouchVideoThumbToEmbedCode: function(e){
+			var instance = e.target,
+			    cacheImage = instance.cache.images[instance.currentIndex],
+			    url = cacheImage.imageEl.getAttribute('data-video'),
+			    parent = cacheImage.imageEl.parentNode,
+			    styles = ['display', 'position', 'width', 'height', 'top', 'border'],
+			    s,
+			    div;
+
+			if (!url || url == 'null'){
+				return false;
+			}
+
+			// Youtube support
+			url = url.replace(
+				/(?:http:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
+				'<iframe width="420" height="345" src="http://www.youtube.com/embed/$1?autoplay=1" frameborder="0"'+
+					' allowfullscreen></iframe>'
+			);
+
+			div = document.createElement('div');
+			div.innerHTML = url;
+
+			for (s=0; s<styles.length; s++){
+				div.firstChild.style[styles[s]] = cacheImage.imageEl.style[styles[s]];
+			}
+
+			// Make sure the "transform: translate(0px, 0px)"'s on parent element(s) are unset, as they make the
+			//  video disappear in Firefox..
+			parent.style.transform = '';
+			parent.parentNode.style.transform = '';
+
+			// Put iframe before the image, and hide the image
+			parent.removeChild(cacheImage.imageEl);
+			parent.innerHTML = div.innerHTML;
+			parent.appendChild(cacheImage.imageEl)
+			cacheImage.imageEl.style.display = 'none';
+
+			// Make sure the positions are updated correctly
+			this.carousel.resetPosition();
 		}
 		
 		
