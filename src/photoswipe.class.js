@@ -1300,20 +1300,20 @@
 			    cacheImage = instance.cache.images[instance.currentIndex],
 			    url = cacheImage.imageEl.getAttribute('data-video'),
 			    videoUrl = url,
-			    isImageHiddenAlready = cacheImage.imageEl.style.display != 'block',
+			    isImageHiddenAlready = cacheImage.imageEl.style.display !== 'block',
 			    parent = cacheImage.imageEl.parentNode,
 			    styles = ['display', 'position', 'width', 'height', 'top', 'border'],
 			    s,
 			    div;
 
-			if (!url || url == 'null' || isImageHiddenAlready){
+			if (!url || url === 'null' || isImageHiddenAlready){
 				return false;
 			}
 
-			if (typeof this.map == 'undefined') {
+			if (typeof this.map === 'undefined') {
 				this.map = {};
 			}
-			if (typeof this.map[videoUrl] != 'undefined') {
+			if (typeof this.map[videoUrl] !== 'undefined') {
 				return false;
 			}
 
@@ -1357,10 +1357,10 @@
 
 			this.carousel.el.style.zIndex = this.settings.zIndex;
 
-			if (originalTop && originalTop != 'null'){
+			if (originalTop && originalTop !== 'null'){
 				this.carousel.el.style.top = originalTop;
 			}
-			if (originalHeight && originalHeight != 'null'){
+			if (originalHeight && originalHeight !== 'null'){
 				this.carousel.el.style.height = originalHeight;
 			}
 		}
