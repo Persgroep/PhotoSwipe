@@ -52,7 +52,8 @@
 		mouseWheelHandler: null,
 		zoomPanRotateTransformHandler: null,
 		videoThumbToEmbedCodeHandler: null,
-		
+		undoVimeoFixes : null,
+
 		
 		_isResettingPosition: null,
 		_uiWebViewResetPositionTimeout: null,
@@ -149,6 +150,7 @@
 				preventHide: false,
 				preventSlideshow: false,
 				zIndex: 1000,
+				zIndexCarousel: 1001,
 				backButtonHideEnabled: true,
 				enableKeyboard: true,
 				enableMouseWheel: true,
@@ -395,6 +397,7 @@
 				this.mouseWheelHandler = this.onMouseWheel.bind(this);
 				this.zoomPanRotateTransformHandler = this.onZoomPanRotateTransform.bind(this);
 				this.videoThumbToEmbedCodeHandler = this.onTouchVideoThumbToEmbedCode.bind(this);
+				this.undoVimeoFixes = this.onToolbarClickUndoVimeoFixes.bind(this);
 			}
 			
 			// Set window handlers
@@ -453,6 +456,7 @@
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onShow, this.toolbarShowHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onBeforeHide, this.toolbarBeforeHideHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onHide, this.toolbarHideHandler);
+				Util.Events.add(this.toolbar, Toolbar.EventTypes.onTap, this.undoVimeoFixes);
 			}
 
 			Util.Events.add(this, PhotoSwipe.EventTypes.onTouch, this.videoThumbToEmbedCodeHandler);
@@ -1291,15 +1295,25 @@
 		},
 
 		onTouchVideoThumbToEmbedCode: function(e){
+
 			var instance = e.target,
 			    cacheImage = instance.cache.images[instance.currentIndex],
 			    url = cacheImage.imageEl.getAttribute('data-video'),
+			    videoUrl = url,
+			    isImageHiddenAlready = cacheImage.imageEl.style.display != 'block',
 			    parent = cacheImage.imageEl.parentNode,
 			    styles = ['display', 'position', 'width', 'height', 'top', 'border'],
 			    s,
 			    div;
 
-			if (!url || url == 'null'){
+			if (!url || url == 'null' || isImageHiddenAlready){
+				return false;
+			}
+
+			if (typeof this.map == 'undefined') {
+				this.map = {};
+			}
+			if (typeof this.map[videoUrl] != 'undefined') {
 				return false;
 			}
 
@@ -1308,6 +1322,12 @@
 				/(?:http:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
 				'<iframe width="420" height="345" src="http://www.youtube.com/embed/$1?autoplay=1" frameborder="0"'+
 					' allowfullscreen></iframe>'
+			);
+
+			// Vimeo support
+			url = url.replace(
+				/(?:http:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g,
+				'<iframe src="//player.vimeo.com/video/$1?color=f2e81f&amp;autoplay=1" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'
 			);
 
 			div = document.createElement('div');
@@ -1325,13 +1345,26 @@
 			// Put iframe before the image, and hide the image
 			parent.removeChild(cacheImage.imageEl);
 			parent.innerHTML = div.innerHTML;
-			parent.appendChild(cacheImage.imageEl)
-			cacheImage.imageEl.style.display = 'none';
+			parent.appendChild(cacheImage.imageEl);
 
 			// Make sure the positions are updated correctly
 			this.carousel.resetPosition();
+		},
+
+		onToolbarClickUndoVimeoFixes: function(e){
+			var originalTop = this.carousel.el.getAttribute('data-original-top'),
+				originalHeight = this.carousel.el.getAttribute('data-original-height');
+
+			this.carousel.el.style.zIndex = this.settings.zIndex;
+
+			if (originalTop && originalTop != 'null'){
+				this.carousel.el.style.top = originalTop;
+			}
+			if (originalHeight && originalHeight != 'null'){
+				this.carousel.el.style.height = originalHeight;
+			}
 		}
-		
+
 		
 	});
 	

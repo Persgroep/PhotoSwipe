@@ -224,15 +224,30 @@
 						iframeEl.style[styles[s]] = imageEl.style[styles[s]];
 					}
 
+					iframeEl.style.display = 'block';
+					imageEl.style.display = 'none';
+
 					toolbar = this.el.nextSibling.nextSibling;
 					caption = toolbar.nextSibling;
 					toolbarHeight = this.el.getBoundingClientRect().height - toolbar.getBoundingClientRect().top + 5;
 					captionHeight = caption.getElementsByTagName('div')[0].getBoundingClientRect().height + 5;
 
+					/**
+					 * The Vimeo player requires the carousel to be above the toolbar and caption w/regards to zIndex.
+					 * Or otherwise the events on the player are not triggered.
+					 * Making the carousel on top, makes the toolbar and caption events malfunction however, so we
+					 * make the height of the carousel a little less, so the events propagate to the toolbar.
+					 */
+					this.el.style.zIndex = this.settings.zIndexCarousel;
+					this.el.setAttribute('data-original-height', this.el.getBoundingClientRect().height + 'px');
+					this.el.setAttribute('data-original-top', this.el.getBoundingClientRect().top + 'px');
+					this.el.style.height = (this.el.getBoundingClientRect().height -
+						toolbarHeight - captionHeight) + 'px';
+					this.el.style.top = (this.el.getBoundingClientRect().top + captionHeight) + 'px';
+
 					if ((toolbarHeight + captionHeight) > 0){
 						iframeEl.style.height = (iframeEl.getBoundingClientRect().height -
 							toolbarHeight - captionHeight) + 'px';
-						iframeEl.style.top = (iframeEl.getBoundingClientRect().top + captionHeight) + 'px';
 					}
 					for (s in styles){
 						imageEl.style[styles[s]] = iframeEl.style[styles[s]];
