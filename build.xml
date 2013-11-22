@@ -112,6 +112,7 @@
 		
 		<concat destfile="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.js">	
 			
+			<fileset dir="." includes="${project.src.dir}/lib/klass.min.js" />
 			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/util.js" />
 			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/browser.js" />
 			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/events${engine}.js" />
@@ -137,7 +138,8 @@
 			<fileset dir="." includes="${project.src.dir}/zoompanrotate.class.js" />
 			<fileset dir="." includes="${project.src.dir}/photoswipe.js" />
 			<fileset dir="." includes="${project.src.dir}/photoswipe.class.js" />
-		
+			<fileset dir="." includes="${project.src.dir}/autotrack.js" />
+
 		</concat>
 		
 		<antcall target="versionStamp">

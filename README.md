@@ -1,6 +1,17 @@
 PhotoSwipe - The web image gallery for your mobile device
 =========================================================
 
+AutoTrack additional stuff
+--------------------------
+
+* Run ./build.sh to generate the release of the photoswipe javascript etc.
+* Use ./release.ksh to deploy this to your /projects/autotrack checkout.
+* The AutoTrack branch also modified the build.xml, to have the photoswipe javascript
+  include the klass.min.js themselves.
+
+
+
+
 web: [www.photoswipe.com](http://www.photoswipe.com), [www.codecomputerlove.com](http://www.codecomputerlove.com)
 
 twitter: [@photoswipe](http://twitter.com/#!/photoswipe)
