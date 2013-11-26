@@ -219,7 +219,7 @@
 				// If an item has an iframe then resize that
 				iframeEl = Util.DOM.find('iframe', itemEls[i])[0];
 				if (!Util.isNothing(iframeEl)){
-					// Copy styles from image
+					// Copy styles from image to iframe
 					for (s=0; s<styles.length; s++){
 						iframeEl.style[styles[s]] = imageEl.style[styles[s]];
 					}
@@ -239,18 +239,16 @@
 					 * make the height of the carousel a little less, so the events propagate to the toolbar.
 					 */
 					this.el.style.zIndex = this.settings.zIndexCarousel;
-					this.el.setAttribute('data-original-height', this.el.getBoundingClientRect().height + 'px');
-					this.el.setAttribute('data-original-top', this.el.getBoundingClientRect().top + 'px');
+					this.el.setAttribute('data-original-height', this.el.style.height);
+					this.el.setAttribute('data-original-top', this.el.style.top);
 					this.el.style.height = (this.el.getBoundingClientRect().height -
 						toolbarHeight - captionHeight) + 'px';
-					this.el.style.top = (this.el.getBoundingClientRect().top + captionHeight) + 'px';
+					this.el.style.top = (this.el.getBoundingClientRect().top +
+						captionHeight + window.pageYOffset) + 'px';
 
 					if ((toolbarHeight + captionHeight) > 0){
 						iframeEl.style.height = (iframeEl.getBoundingClientRect().height -
 							toolbarHeight - captionHeight) + 'px';
-					}
-					for (s in styles){
-						imageEl.style[styles[s]] = iframeEl.style[styles[s]];
 					}
 				}
 			}
