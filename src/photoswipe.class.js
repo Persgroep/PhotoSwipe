@@ -200,10 +200,25 @@
 				getImageSource: PhotoSwipe.Cache.Functions.getImageSource,
 				getImageCaption: PhotoSwipe.Cache.Functions.getImageCaption,
 				getImageMetaData: PhotoSwipe.Cache.Functions.getImageMetaData,
-				cacheMode: PhotoSwipe.Cache.Mode.normal
-				
+				cacheMode: PhotoSwipe.Cache.Mode.normal,
+
+
+				// Video providers
+				videoProviders:{
+					youtube:{
+						regex: /(?:http:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
+						embedcode: '<iframe width="420" height="345" src="http://www.youtube.com/embed/$1?autoplay=1"' +
+							' frameborder="0" allowfullscreen></iframe>'
+					},
+					vimeo:{
+						regex: /(?:http:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g,
+						embedcode: '<iframe src="//player.vimeo.com/video/$1?color=f2e81f&amp;autoplay=1" width="500"' +
+							' height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
+							'</iframe>'
+					}
+				}
 			};
-			
+
 			Util.extend(this.settings, options);
 			
 			if (this.settings.target !== window){
@@ -438,9 +453,9 @@
 				}
 								
 				Util.Events.add(window, 'hashchange', this.windowHashChangeHandler);
-			
+
 			}
-			
+
 			if (this.settings.enableMouseWheel){
 				Util.Events.add(window, 'mousewheel', this.mouseWheelHandler);
 			}
@@ -1303,6 +1318,7 @@
 			    isImageHiddenAlready = cacheImage.imageEl.style.display !== 'block',
 			    parent = cacheImage.imageEl.parentNode,
 			    styles = ['display', 'position', 'width', 'height', 'top', 'border'],
+			    videoProvider,
 			    s,
 			    div;
 
@@ -1317,18 +1333,10 @@
 				return false;
 			}
 
-			// Youtube support
-			url = url.replace(
-				/(?:http:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
-				'<iframe width="420" height="345" src="http://www.youtube.com/embed/$1?autoplay=1" frameborder="0"'+
-					' allowfullscreen></iframe>'
-			);
-
-			// Vimeo support
-			url = url.replace(
-				/(?:http:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g,
-				'<iframe src="//player.vimeo.com/video/$1?color=f2e81f&amp;autoplay=1" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>'
-			);
+			for (s in this.settings.videoProviders) {
+				videoProvider = this.settings.videoProviders[s];
+				url = url.replace(videoProvider.regex, videoProvider.embedcode);
+			}
 
 			div = document.createElement('div');
 			div.innerHTML = url;
