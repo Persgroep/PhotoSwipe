@@ -27,7 +27,8 @@
 		imageLoadHandler: null,
 		imageErrorHandler: null,
 		slideshowTimeout: null,
-		
+		toolbarRef: null,
+
 		
 		
 		/*
@@ -227,8 +228,8 @@
 					iframeEl.style.display = 'block';
 					imageEl.style.display = 'none';
 
-					toolbar = this.el.nextSibling.nextSibling;
-					caption = toolbar.nextSibling;
+					toolbar = this.toolbarRef.toolbarEl;
+					caption = this.toolbarRef.captionEl;
 					toolbarHeight = this.el.getBoundingClientRect().height - toolbar.getBoundingClientRect().top + 5;
 					captionHeight = caption.getElementsByTagName('div')[0].getBoundingClientRect().height + 5;
 
@@ -936,10 +937,12 @@
 			Util.Events.remove(cacheImage, PhotoSwipe.Image.EventTypes.onLoad, this.imageLoadHandler);
 			Util.Events.remove(cacheImage, PhotoSwipe.Image.EventTypes.onError, this.imageErrorHandler);
 			
+		},
+
+		setToolbarRef: function(toolbar) {
+			this.toolbarRef = toolbar;
 		}
-		
-		
-		
+
 	});
 	
 	
