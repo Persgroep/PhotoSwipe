@@ -76,7 +76,7 @@
 			
 			var imgs = this.refObj.getElementsByTagName('img'), video = false;
 
-			if (imgs.length){
+			if (imgs.length > 0){
 				video = imgs[0].getAttribute('data-video');
 			}
 
