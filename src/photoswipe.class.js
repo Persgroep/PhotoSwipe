@@ -330,7 +330,11 @@
 			if (!this.settings.captionAndToolbarHide){
 				this.toolbar = new Toolbar.ToolbarClass(this.cache, this.settings);
 			}
-			
+
+			// There is a dependency here, the carousel now resizes itself between the toolbar and caption divs.
+			// This way possible video players can receive their focus with a higher z-index, without blocking
+			// the buttons on the toolbar.
+			this.carousel.setToolbarRef(this.toolbar);
 		},
 		
 		
