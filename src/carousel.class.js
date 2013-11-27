@@ -271,8 +271,8 @@
 			}
 
 			var src    = Util.DOM.getAttribute(imageEl, 'src'),
-				posFit = this.getImagePosition(imageEl, 'fit'),
-				pos    = this.getImagePosition(imageEl, this.settings.imageScaleMethod);
+			    posFit = this.getImagePosition(imageEl, 'fit'),
+			    pos    = this.getImagePosition(imageEl, this.settings.imageScaleMethod);
 
 			imageEl.setAttribute('data-fitted-width', posFit.width);
 			imageEl.setAttribute('data-fitted-height', posFit.height);
