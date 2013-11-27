@@ -166,10 +166,9 @@
 		 * Function: resetPosition
 		 */
 		resetPosition: function(){
-			
-			
+
 			var width, height, top, itemWidth, itemEls, contentWidth, i, j, itemEl, imageEl, iframeEl,
-				styles = ['width', 'height', 'top', 'left'], s, diff, toolbar, caption, toolbarHeight, captionHeight;
+				toolbar = this.toolbarRef.toolbarEl, caption = this.toolbarRef.captionEl, toolbarHeight, captionHeight;
 
 			if (this.settings.target === window){
 				width = Util.DOM.windowWidth();
@@ -181,55 +180,56 @@
 				height = Util.DOM.height(this.settings.target);
 				top = '0px';
 			}
-			
+
 			itemWidth = (this.settings.margin > 0) ? width + this.settings.margin : width;
 			itemEls = Util.DOM.find('.' + PhotoSwipe.Carousel.CssClasses.item, this.contentEl);
 			contentWidth = itemWidth * itemEls.length;
-			
-			
+
+
 			// Set the height and width to fill the document
 			Util.DOM.setStyle(this.el, {
 				top: top,
 				width: width,
 				height: height
 			});
-			
-			
+
+
 			// Set the height and width of the content el
 			Util.DOM.setStyle(this.contentEl, {
 				width: contentWidth,
 				height: height
 			});
-			
-			
+
+
 			// Set the height and width of item elements
 			for (i=0, j=itemEls.length; i<j; i++){
-				
+
 				itemEl = itemEls[i];
 				Util.DOM.setStyle(itemEl, {
 					width: width,
 					height: height
 				});
-				
+
 				// If an item has an image then resize that
 				imageEl = Util.DOM.find('img', itemEls[i])[0];
 				if (!Util.isNothing(imageEl)){
 					this.resetImagePosition(imageEl);
 				}
-				
+
 				// If an item has an iframe then resize that
 				iframeEl = Util.DOM.find('iframe', itemEls[i])[0];
 				if (!Util.isNothing(iframeEl)){
-					// Copy styles from image to iframe
-					for (s=0; s<styles.length; s++){
-						iframeEl.style[styles[s]] = imageEl.style[styles[s]];
-					}
 
+					// Copy styles from image to iframe
+					iframeEl.style.top = imageEl.getAttribute('data-fitted-top');
+					iframeEl.style.left = imageEl.getAttribute('data-fitted-left');
+					iframeEl.style.width = imageEl.getAttribute('data-fitted-width') + 'px';
+					iframeEl.style.height = imageEl.getAttribute('data-fitted-height') + 'px';
+
+					// Swap visibility
 					iframeEl.style.display = 'block';
 					imageEl.style.display = 'none';
 
-					toolbar = this.toolbarRef.toolbarEl;
-					caption = this.toolbarRef.captionEl;
 					toolbarHeight = this.el.getBoundingClientRect().height - toolbar.getBoundingClientRect().top + 5;
 					captionHeight = caption.getElementsByTagName('div')[0].getBoundingClientRect().height + 5;
 
@@ -253,53 +253,109 @@
 					}
 				}
 			}
-			
+
 			this.setContentLeftPosition();
-			
-			
+
+
 		},
-		
+
 		
 		
 		/*
 		 * Function: resetImagePosition
 		 */
 		resetImagePosition: function(imageEl){
-			
+
 			if (Util.isNothing(imageEl)){
 				return;
 			}
+
+			var src    = Util.DOM.getAttribute(imageEl, 'src'),
+				posFit = this.getImagePosition(imageEl, 'fit'),
+				pos    = this.getImagePosition(imageEl, this.settings.imageScaleMethod);
+
+			imageEl.setAttribute('data-fitted-width', posFit.width);
+			imageEl.setAttribute('data-fitted-height', posFit.height);
+			imageEl.setAttribute('data-fitted-top', posFit.top);
+			imageEl.setAttribute('data-fitted-left', posFit.left);
+
+			Util.DOM.setStyle(imageEl, {
+				position: 'absolute',
+				width: pos.width,
+				height: pos.height,
+				top: pos.top,
+				left: pos.left,
+				display: 'block'
+			});
+		},
+
+
+
+		/*
+		 * Function: setContentLeftPosition
+		 */
+		setContentLeftPosition: function(){
+
+			var width, itemEls, left;
+			if (this.settings.target === window){
+				width = Util.DOM.windowWidth();
+			}
+			else{
+				width = Util.DOM.width(this.settings.target);
+			}
+
+			itemEls = this.getItemEls();
+			left = 0;
+
+			if (this.settings.loop){
+				left = (width + this.settings.margin) * -1;
+			}
+			else{
+
+				if (this.currentCacheIndex === this.cache.images.length-1){
+					left = ((itemEls.length-1) * (width + this.settings.margin)) * -1;
+				}
+				else if (this.currentCacheIndex > 0){
+					left = (width + this.settings.margin) * -1;
+				}
+
+			}
+
+			Util.DOM.setStyle(this.contentEl, {
+				left: left + 'px'
+			});
 			
-			var 
-				src = Util.DOM.getAttribute(imageEl, 'src'),
-				scale, 
-				newWidth, 
-				newHeight, 
-				newTop, 
-				newLeft,
+		},
+
+		getImagePosition: function (imageEl, imageScaleMethod){
+			var scale,
+				newWidth,
+				newHeight,
 				maxWidth = Util.DOM.width(this.el),
-				maxHeight = Util.DOM.height(this.el);
-			
-			if (this.settings.imageScaleMethod === 'fitNoUpscale'){
-				
+				maxHeight = Util.DOM.height(this.el),
+				newTop,
+				newLeft;
+
+			if (imageScaleMethod === 'fitNoUpscale'){
+
 				newWidth = imageEl.naturalWidth;
 				newHeight =imageEl.naturalHeight;
-				
+
 				if (newWidth > maxWidth){
 					scale = maxWidth / newWidth;
 					newWidth = Math.round(newWidth * scale);
 					newHeight = Math.round(newHeight * scale);
 				}
-				
+
 				if (newHeight > maxHeight){
 					scale = maxHeight / newHeight;
 					newHeight = Math.round(newHeight * scale);
 					newWidth = Math.round(newWidth * scale);
 				}
-				
+
 			}
 			else{
-				
+
 				if (imageEl.isLandscape) {
 					// Ensure the width fits the screen
 					scale = maxWidth / imageEl.naturalWidth;
@@ -308,27 +364,27 @@
 					// Ensure the height fits the screen
 					scale = maxHeight / imageEl.naturalHeight;
 				}
-				
+
 				newWidth = Math.round(imageEl.naturalWidth * scale);
 				newHeight = Math.round(imageEl.naturalHeight * scale);
-				
-				if (this.settings.imageScaleMethod === 'zoom'){
-					
+
+				if (imageScaleMethod === 'zoom'){
+
 					scale = 1;
 					if (newHeight < maxHeight){
-						scale = maxHeight /newHeight;	
+						scale = maxHeight /newHeight;
 					}
 					else if (newWidth < maxWidth){
-						scale = maxWidth /newWidth;	
+						scale = maxWidth /newWidth;
 					}
-					
+
 					if (scale !== 1) {
 						newWidth = Math.round(newWidth * scale);
 						newHeight = Math.round(newHeight * scale);
 					}
-					
+
 				}
-				else if (this.settings.imageScaleMethod === 'fit') {
+				else if (imageScaleMethod === 'fit') {
 					// Rescale again to ensure full image fits into the viewport
 					scale = 1;
 					if (newWidth > maxWidth) {
@@ -342,62 +398,20 @@
 						newHeight = Math.round(newHeight * scale);
 					}
 				}
-			
+
 			}
-			
+
 			newTop = Math.round( ((maxHeight - newHeight) / 2) ) + 'px';
 			newLeft = Math.round( ((maxWidth - newWidth) / 2) ) + 'px';
-			
-			Util.DOM.setStyle(imageEl, {
-				position: 'absolute',
+
+			return {
 				width: newWidth,
 				height: newHeight,
 				top: newTop,
-				left: newLeft,
-				display: 'block'
-			});
-		
+				left: newLeft
+			};
 		},
-		
-		
-		
-		/*
-		 * Function: setContentLeftPosition
-		 */
-		setContentLeftPosition: function(){
-		
-			var width, itemEls, left;
-			if (this.settings.target === window){
-				width = Util.DOM.windowWidth();
-			}
-			else{
-				width = Util.DOM.width(this.settings.target);
-			}
-			
-			itemEls = this.getItemEls();
-			left = 0;
-				
-			if (this.settings.loop){
-				left = (width + this.settings.margin) * -1;
-			}
-			else{
-				
-				if (this.currentCacheIndex === this.cache.images.length-1){
-					left = ((itemEls.length-1) * (width + this.settings.margin)) * -1;
-				}
-				else if (this.currentCacheIndex > 0){
-					left = (width + this.settings.margin) * -1;
-				}
-				
-			}
-			
-			Util.DOM.setStyle(this.contentEl, {
-				left: left + 'px'
-			});
-			
-		},
-		
-		
+
 		
 		/*
 		 * Function: 
