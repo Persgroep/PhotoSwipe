@@ -1,4 +1,2 @@
+dojo.provide('at.image.photoswipe.impl');
 
-// Support asynchronous loading..
-
-window.__photoswipe_callback();
