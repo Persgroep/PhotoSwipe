@@ -51,7 +51,9 @@
 		toolbarHideHandler: null,
 		mouseWheelHandler: null,
 		zoomPanRotateTransformHandler: null,
-		
+		videoThumbToEmbedCodeHandler: null,
+		undoVimeoFixes : null,
+
 		
 		_isResettingPosition: null,
 		_uiWebViewResetPositionTimeout: null,
@@ -78,7 +80,7 @@
 			Util.Events.remove(this, PhotoSwipe.EventTypes.onBeforeCaptionAndToolbarHide);
 			Util.Events.remove(this, PhotoSwipe.EventTypes.onCaptionAndToolbarHide);
 			Util.Events.remove(this, PhotoSwipe.EventTypes.onZoomPanRotateTransform);
-			
+
 			
 			this.removeEventHandlers();
 			
@@ -148,6 +150,7 @@
 				preventHide: false,
 				preventSlideshow: false,
 				zIndex: 1000,
+				zIndexCarousel: 1001,
 				backButtonHideEnabled: true,
 				enableKeyboard: true,
 				enableMouseWheel: true,
@@ -179,6 +182,7 @@
 				captionAndToolbarHide: false,
 				captionAndToolbarFlipPosition: false,
 				captionAndToolbarAutoHideDelay: 5000,
+				captionAndToolbarAutoHideOnTap: true,
 				captionAndToolbarOpacity: 0.8,
 				captionAndToolbarShowEmptyCaptions: true,
 				getToolbar: PhotoSwipe.Toolbar.getToolbar,
@@ -196,10 +200,25 @@
 				getImageSource: PhotoSwipe.Cache.Functions.getImageSource,
 				getImageCaption: PhotoSwipe.Cache.Functions.getImageCaption,
 				getImageMetaData: PhotoSwipe.Cache.Functions.getImageMetaData,
-				cacheMode: PhotoSwipe.Cache.Mode.normal
-				
+				cacheMode: PhotoSwipe.Cache.Mode.normal,
+
+
+				// Video providers
+				videoProviders:{
+					youtube:{
+						regex: /(?:http:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
+						embedcode: '<iframe width="420" height="345" src="http://www.youtube.com/embed/$1?autoplay=1"' +
+							' frameborder="0" allowfullscreen></iframe>'
+					},
+					vimeo:{
+						regex: /(?:http:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g,
+						embedcode: '<iframe src="//player.vimeo.com/video/$1?color=f2e81f&amp;autoplay=1" width="500"' +
+							' height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
+							'</iframe>'
+					}
+				}
 			};
-			
+
 			Util.extend(this.settings, options);
 			
 			if (this.settings.target !== window){
@@ -311,7 +330,11 @@
 			if (!this.settings.captionAndToolbarHide){
 				this.toolbar = new Toolbar.ToolbarClass(this.cache, this.settings);
 			}
-			
+
+			// There is a dependency here, the carousel now resizes itself between the toolbar and caption divs.
+			// This way possible video players can receive their focus with a higher z-index, without blocking
+			// the buttons on the toolbar.
+			this.carousel.setToolbarRef(this.toolbar);
 		},
 		
 		
@@ -392,7 +415,8 @@
 				this.toolbarHideHandler = this.onToolbarHide.bind(this);
 				this.mouseWheelHandler = this.onMouseWheel.bind(this);
 				this.zoomPanRotateTransformHandler = this.onZoomPanRotateTransform.bind(this);
-				
+				this.videoThumbToEmbedCodeHandler = this.onTouchVideoThumbToEmbedCode.bind(this);
+				this.undoVimeoFixes = this.onToolbarClickUndoVimeoFixes.bind(this);
 			}
 			
 			// Set window handlers
@@ -433,9 +457,9 @@
 				}
 								
 				Util.Events.add(window, 'hashchange', this.windowHashChangeHandler);
-			
+
 			}
-			
+
 			if (this.settings.enableMouseWheel){
 				Util.Events.add(window, 'mousewheel', this.mouseWheelHandler);
 			}
@@ -451,8 +475,11 @@
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onShow, this.toolbarShowHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onBeforeHide, this.toolbarBeforeHideHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onHide, this.toolbarHideHandler);
+				Util.Events.add(this.toolbar, Toolbar.EventTypes.onTap, this.undoVimeoFixes);
 			}
-		
+
+			Util.Events.add(this, PhotoSwipe.EventTypes.onTouch, this.videoThumbToEmbedCodeHandler);
+
 		},
 		
 		
@@ -1284,8 +1311,72 @@
 				translateY: e.translateY
 			});
 			
+		},
+
+		onTouchVideoThumbToEmbedCode: function(e){
+
+			var instance = e.target,
+			    cacheImage = instance.cache.images[instance.currentIndex],
+			    url = cacheImage.imageEl.getAttribute('data-video'),
+			    videoUrl = url,
+			    isImageHiddenAlready = cacheImage.imageEl.style.display !== 'block',
+			    parent = cacheImage.imageEl.parentNode,
+			    styles = ['display', 'position', 'width', 'height', 'top', 'border'],
+			    videoProvider,
+			    s,
+			    div;
+
+			if (!url || url === 'null' || isImageHiddenAlready){
+				return false;
+			}
+
+			if (typeof this.map === 'undefined') {
+				this.map = {};
+			}
+			if (typeof this.map[videoUrl] !== 'undefined') {
+				return false;
+			}
+
+			for (s in this.settings.videoProviders) {
+				videoProvider = this.settings.videoProviders[s];
+				url = url.replace(videoProvider.regex, videoProvider.embedcode);
+			}
+
+			div = document.createElement('div');
+			div.innerHTML = url;
+
+			for (s=0; s<styles.length; s++){
+				div.firstChild.style[styles[s]] = cacheImage.imageEl.style[styles[s]];
+			}
+
+			// Make sure the "transform: translate(0px, 0px)"'s on parent element(s) are unset, as they make the
+			//  video disappear in Firefox..
+			parent.style.transform = '';
+			parent.parentNode.style.transform = '';
+
+			// Put iframe before the image, and hide the image
+			parent.removeChild(cacheImage.imageEl);
+			parent.innerHTML = div.innerHTML;
+			parent.appendChild(cacheImage.imageEl);
+
+			// Make sure the positions are updated correctly
+			this.carousel.resetPosition();
+		},
+
+		onToolbarClickUndoVimeoFixes: function(e){
+			var originalTop = this.carousel.el.getAttribute('data-original-top'),
+				originalHeight = this.carousel.el.getAttribute('data-original-height');
+
+			this.carousel.el.style.zIndex = this.settings.zIndex;
+
+			if (originalTop && originalTop !== 'null'){
+				this.carousel.el.style.top = originalTop;
+			}
+			if (originalHeight && originalHeight !== 'null'){
+				this.carousel.el.style.height = originalHeight;
+			}
 		}
-		
+
 		
 	});
 	
