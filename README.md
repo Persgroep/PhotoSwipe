@@ -5,7 +5,7 @@ AutoTrack additional stuff
 --------------------------
 
 * Run ./build.sh to generate the release of the photoswipe javascript etc.
-* Use ./release.ksh to deploy this to your /projects/autotrack checkout.
+* Use ./release.sh to deploy this to your /projects/autotrack checkout.
 * The AutoTrack branch also modified the build.xml, to have the photoswipe javascript
   include the klass.min.js themselves.
 
