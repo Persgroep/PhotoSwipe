@@ -218,8 +218,10 @@
 					},
 					flashobj:{
 						regex: /(.*.swf)$/g,
-						embedcode: '<iframe src="$1" width="500" height="281" frameborder="0" webkitallowfullscreen '+
-							'mozallowfullscreen allowfullscreen></iframe>'
+						embedcode: '<object width="100%" height="100%" classid="clsid:d27cdb6e-ae6d-11cf-96b8-33355351'+
+							'00%00" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#ve'+
+							'rsion=8,0,0,0"><param name="SRC" value="$1"><embed src="$1" width="100%" height="100%">'+
+							'</embed></object>'
 					}
 				}
 			};
