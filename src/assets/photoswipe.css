@@ -21,7 +21,11 @@ body.ps-active *, div.ps-active *
 	-webkit-tap-highlight-color:  rgba(255, 255, 255, 0); 
 	display: none;
 }
-body.ps-active *:focus, div.ps-active *:focus 
+body.ps-active embed, div.ps-active embed
+{
+	display: block;
+}
+body.ps-active *:focus, div.ps-active *:focus
 { 
 	outline: 0; 
 }
