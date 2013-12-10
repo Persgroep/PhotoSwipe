@@ -215,6 +215,11 @@
 						embedcode: '<iframe src="//player.vimeo.com/video/$1?color=f2e81f&amp;autoplay=1" width="500"' +
 							' height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
 							'</iframe>'
+					},
+					flashobj:{
+						regex: /(.*.swf)$/g,
+						embedcode: '<iframe src="$1" width="500" height="281" frameborder="0" webkitallowfullscreen '+
+							'mozallowfullscreen allowfullscreen></iframe>'
 					}
 				}
 			};
