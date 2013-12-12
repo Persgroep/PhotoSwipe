@@ -484,9 +484,6 @@
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onHide, this.toolbarHideHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onTap, this.undoVimeoFixes);
 			}
-
-			Util.Events.add(this, PhotoSwipe.EventTypes.onTouch, this.videoThumbToEmbedCodeHandler);
-
 		},
 		
 		
@@ -1070,6 +1067,7 @@
 						
 					case Util.TouchElement.ActionTypes.tap:
 						this.toggleToolbar();
+                        this.videoThumbToEmbedCodeHandler();
 						break;
 						
 					case Util.TouchElement.ActionTypes.doubleTap:
@@ -1320,9 +1318,9 @@
 			
 		},
 
-		onTouchVideoThumbToEmbedCode: function(e){
+		onTouchVideoThumbToEmbedCode: function(){
 
-			var instance = e.target,
+			var instance = this,
 			    cacheImage = instance.cache.images[instance.currentIndex],
 			    url = cacheImage.imageEl.getAttribute('data-video'),
 			    videoUrl = url,
