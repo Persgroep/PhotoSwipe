@@ -11,6 +11,8 @@ cp -prv ./release/$VERSION/code.photoswipe-$VERSION.js         $DEST/public/scri
 cp -prv ./release/$VERSION/photoswipe.css                      $DEST/public/css/photoswipe.css
 cp -prv ./release/$VERSION/icons.png                           $DEST/public/gfx/layout/photoswipe/icons.png
 optipng -o7                                                    $DEST/public/gfx/layout/photoswipe/icons.png
+cp -prv ./release/$VERSION/icons-2x.png                        $DEST/public/gfx/layout/photoswipe/icons-2x.png
+optipng -o7                                                    $DEST/public/gfx/layout/photoswipe/icons-2x.png
 
 cp -prv ./release/$VERSION/loader.gif                          $DEST/public/gfx/layout/photoswipe/loader.gif
 gifsicle -b --optimize=3                                       $DEST/public/gfx/layout/photoswipe/loader.gif

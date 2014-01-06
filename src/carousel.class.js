@@ -167,7 +167,7 @@
 		 */
 		resetPosition: function(){
 
-			var width, height, top, itemWidth, itemEls, contentWidth, i, j, itemEl, imageEl, iframeEl,
+			var width, height, top, itemWidth, itemEls, contentWidth, i, j, itemEl, imageEl, dynamicObjectEl,
 				toolbar = this.toolbarRef.toolbarEl, caption = this.toolbarRef.captionEl, toolbarHeight, captionHeight;
 
 			if (this.settings.target === window){
@@ -216,18 +216,21 @@
 					this.resetImagePosition(imageEl);
 				}
 
-				// If an item has an iframe then resize that
-				iframeEl = Util.DOM.find('iframe', itemEls[i])[0];
-				if (!Util.isNothing(iframeEl)){
+				// If an item has a dynamic object (<iframe>, <object>, ..) then resize that
+				dynamicObjectEl = Util.DOM.find('iframe', itemEls[i])[0];
+				if (Util.isNothing(dynamicObjectEl)){
+					dynamicObjectEl = Util.DOM.find('object', itemEls[i])[0];
+				}
+				if (!Util.isNothing(dynamicObjectEl)){
 
 					// Copy styles from image to iframe
-					iframeEl.style.top = imageEl.getAttribute('data-fitted-top');
-					iframeEl.style.left = imageEl.getAttribute('data-fitted-left');
-					iframeEl.style.width = imageEl.getAttribute('data-fitted-width') + 'px';
-					iframeEl.style.height = imageEl.getAttribute('data-fitted-height') + 'px';
+					dynamicObjectEl.style.top = imageEl.getAttribute('data-fitted-top');
+					dynamicObjectEl.style.left = imageEl.getAttribute('data-fitted-left');
+					dynamicObjectEl.style.width = imageEl.getAttribute('data-fitted-width') + 'px';
+					dynamicObjectEl.style.height = imageEl.getAttribute('data-fitted-height') + 'px';
 
 					// Swap visibility
-					iframeEl.style.display = 'block';
+					dynamicObjectEl.style.display = 'block';
 					imageEl.style.display = 'none';
 
 					toolbarHeight = this.el.getBoundingClientRect().height - toolbar.getBoundingClientRect().top + 5;
@@ -248,7 +251,7 @@
 						captionHeight + window.pageYOffset) + 'px';
 
 					if ((toolbarHeight + captionHeight) > 0){
-						iframeEl.style.height = (iframeEl.getBoundingClientRect().height -
+						dynamicObjectEl.style.height = (dynamicObjectEl.getBoundingClientRect().height -
 							toolbarHeight - captionHeight) + 'px';
 					}
 				}

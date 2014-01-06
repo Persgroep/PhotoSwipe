@@ -215,6 +215,13 @@
 						embedcode: '<iframe src="//player.vimeo.com/video/$1?color=f2e81f&amp;autoplay=1" width="500"' +
 							' height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
 							'</iframe>'
+					},
+					flashobj:{
+						regex: /(.*.swf)$/g,
+						embedcode: '<object width="100%" height="100%" classid="clsid:d27cdb6e-ae6d-11cf-96b8-33355351'+
+							'00%00" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#ve'+
+							'rsion=8,0,0,0"><param name="SRC" value="$1"><embed src="$1" width="100%" height="100%">'+
+							'</embed></object>'
 					}
 				}
 			};
@@ -477,9 +484,6 @@
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onHide, this.toolbarHideHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onTap, this.undoVimeoFixes);
 			}
-
-			Util.Events.add(this, PhotoSwipe.EventTypes.onTouch, this.videoThumbToEmbedCodeHandler);
-
 		},
 		
 		
@@ -1063,6 +1067,7 @@
 						
 					case Util.TouchElement.ActionTypes.tap:
 						this.toggleToolbar();
+                        this.videoThumbToEmbedCodeHandler();
 						break;
 						
 					case Util.TouchElement.ActionTypes.doubleTap:
@@ -1313,9 +1318,9 @@
 			
 		},
 
-		onTouchVideoThumbToEmbedCode: function(e){
+		onTouchVideoThumbToEmbedCode: function(){
 
-			var instance = e.target,
+			var instance = this,
 			    cacheImage = instance.cache.images[instance.currentIndex],
 			    url = cacheImage.imageEl.getAttribute('data-video'),
 			    videoUrl = url,
