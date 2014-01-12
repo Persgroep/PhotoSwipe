@@ -30,19 +30,29 @@
 		<!-- <antcall target="checkJS" /> -->
 		
 		<antcall target="buildNoUtilJs">
-			<param name="engine" value=""/>
-		</antcall>
-		
-		<antcall target="buildJs">
-			<param name="engine" value=""/>
+			<param name="filepart" value=""/>
 		</antcall>
 		
 		<antcall target="buildNoUtilJs">
-			<param name="engine" value=".jquery"/>
+			<param name="filepart" value=".jquery"/>
 		</antcall>
 		
 		<antcall target="buildJs">
+			<param name="filepart" value=""/>
+			<param name="engine" value=""/>
+			<param name="embeddedlib" value="${project.src.dir}/blank.js"/>
+		</antcall>
+		
+		<antcall target="buildJs">
+			<param name="filepart" value=".jquery"/>
 			<param name="engine" value=".jquery"/>
+			<param name="embeddedlib" value="${project.src.dir}/blank.js"/>
+		</antcall>
+
+		<antcall target="buildJs">
+			<param name="filepart" value=".klass"/>
+			<param name="engine" value=""/>
+			<param name="embeddedlib" value="${project.src.dir}/lib/klass.min.js"/>
 		</antcall>
 		
 		<antcall target="buildExamples" />
@@ -68,7 +78,7 @@
 	
 	<target name="buildNoUtilJs">
 		
-		<concat destfile="${project.build.workdir}/noutil/code.photoswipe.noutil${engine}-${project.build.version}.js">	
+		<concat destfile="${project.build.workdir}/noutil/code.photoswipe.noutil${filepart}-${project.build.version}.js">
 			
 			<fileset dir="." includes="${project.src.dir}/ie8compat.js" />
 			<fileset dir="." includes="${project.src.dir}/image.js" />
@@ -92,17 +102,17 @@
 		</concat>
 		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/noutil/code.photoswipe.noutil${engine}-${project.build.version}.js"/>
+			<param name="filePath" value="${project.build.workdir}/noutil/code.photoswipe.noutil${filepart}-${project.build.version}.js"/>
 		</antcall>
 		
 		<antcall target="minimizeJS">
 			<param name="dir" value="${project.build.workdir}/noutil" />
-			<param name="file" value="code.photoswipe.noutil${engine}-${project.build.version}.js"/>
-			<param name="output" value="${project.build.workdir}/noutil/code.photoswipe.noutil${engine}-${project.build.version}.min.js"/>
+			<param name="file" value="code.photoswipe.noutil${filepart}-${project.build.version}.js"/>
+			<param name="output" value="${project.build.workdir}/noutil/code.photoswipe.noutil${filepart}-${project.build.version}.min.js"/>
 		</antcall>
 		
 		<antcall target="addLicense">
-			<param name="file" value="${project.build.workdir}/noutil/code.photoswipe.noutil${engine}-${project.build.version}.min.js"/>
+			<param name="file" value="${project.build.workdir}/noutil/code.photoswipe.noutil${filepart}-${project.build.version}.min.js"/>
 		</antcall>
 		
 	</target>
@@ -111,14 +121,18 @@
 	
 	<target name="buildJs">
 		
-		<concat destfile="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.js">
+		<concat destfile="${project.build.workdir}/code.photoswipe${filepart}-${project.build.version}.js">
 
 			<fileset dir="." includes="${project.src.dir}/autotrack.js" />
-			<fileset dir="." includes="${project.src.dir}/lib/klass.min.js" />
+
+            <fileset dir="." includes="${embeddedlib}" />
+
 			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/util.js" />
 			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/browser.js" />
-			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/events${engine}.js" />
-			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/dom${engine}.js" />
+
+            <fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/events${engine}.js" />
+            <fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/dom${engine}.js" />
+
 			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/animation.js" />
 			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/touchelement.js" />
 			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/touchelement.class.js" />
@@ -145,17 +159,17 @@
 		</concat>
 		
 		<antcall target="versionStamp">
-			<param name="filePath" value="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.js"/>
+			<param name="filePath" value="${project.build.workdir}/code.photoswipe${filepart}-${project.build.version}.js"/>
 		</antcall>
 		
 		<antcall target="minimizeJS">
 			<param name="dir" value="${project.build.workdir}" />
-			<param name="file" value="code.photoswipe${engine}-${project.build.version}.js"/>
-			<param name="output" value="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.min.js"/>
+			<param name="file" value="code.photoswipe${filepart}-${project.build.version}.js"/>
+			<param name="output" value="${project.build.workdir}/code.photoswipe${filepart}-${project.build.version}.min.js"/>
 		</antcall>
 		
 		<antcall target="addLicense">
-			<param name="file" value="${project.build.workdir}/code.photoswipe${engine}-${project.build.version}.min.js"/>
+			<param name="file" value="${project.build.workdir}/code.photoswipe${filepart}-${project.build.version}.min.js"/>
 		</antcall>
 		
 	</target>
@@ -230,6 +244,10 @@
 		
 		<antcall target="versionStamp">
 			<param name="filePath" value="${project.build.workdir}/examples/ajax-gallery2.html"/>
+		</antcall>
+
+		<antcall target="versionStamp">
+			<param name="filePath" value="${project.build.workdir}/examples/video-gallery.html"/>
 		</antcall>
 		
 	</target>
