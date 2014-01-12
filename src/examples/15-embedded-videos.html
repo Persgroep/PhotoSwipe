@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PhotoSwipe</title>
+	<meta name="author" content="Ste Brennan - Code Computerlove - http://www.codecomputerlove.com/" />
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<link href="styles.css" type="text/css" rel="stylesheet" />
+	
+	<link href="../photoswipe.css" type="text/css" rel="stylesheet" />
+	
+	<script type="text/javascript" src="../code.photoswipe.klass-3.0.5.1.js"></script>
+	
+	
+	<script type="text/javascript">
+
+		(function(window, PhotoSwipe){
+		
+			document.addEventListener('DOMContentLoaded', function(){
+			
+				var
+					options = {},
+					instance = PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), options );
+			
+			}, false);
+			
+			
+		}(window, window.Code.PhotoSwipe));
+		
+	</script>
+	
+</head>
+<body>
+
+<div id="Header">
+	<a href="http://www.codecomputerlove.com"><img src="images/codecomputerlovelogo.gif" width="230" height="48" alt="Code Computerlove" /></a>
+</div>
+
+<div id="MainContent">
+
+	<div class="page-content">
+		<h1>PhotoSwipe</h1>
+	</div>
+	
+	<ul id="Gallery" class="gallery">
+		
+		<li><a href="images/full/001.jpg"><img src="images/thumb/001.jpg" alt="Normal image without video" /></a></li>
+		<li><a href="images/thumb/youtube.gif"><img src="images/thumb/youtube.gif" data-video="http://www.youtube.com/watch?v=I65ZARucotc" alt="Image as thumb for YouTube video" /></a></li>
+		<li><a href="images/thumb/vimeo.gif"><img src="images/thumb/vimeo.gif" data-video="http://vimeo.com/10515401" alt="Image as thumb for Vimeo video" /></a></li>
+		
+	</ul>
+	
+</div>	
+
+	
+<div id="Footer">
+	<p><small>&copy; 2011 Code Computerlove Ltd - new media agency / digital marketing agency</small></p>
+
+	<div id="SocialLinks">
+		<a href="http://blog.codecomputerlove.com/"><img src="images/blogicon.png" width="32" height="32" alt="Blog" /></a>
+		<a href="http://www.twitter.com/computerlovers"><img src="images/twittericon.png" width="32" height="32" alt="Twitter" /></a>
+		<a href="http://www.facebook.com/CodeComputerlove"><img src="images/facebookicon.png" width="32" height="32" alt="Facebook" /></a>
+		<a href="http://www.flickr.com/photos/codecomputerlove"><img src="images/flickricon.png" width="32" height="32" alt="Flickr" /></a>
+	</div>
+	
+</div>
+
+</body>
+</html>
