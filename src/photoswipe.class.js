@@ -1397,6 +1397,8 @@
 				this.captionAndToolbarAutoHideOnTapOriginalValue = this.settings.captionAndToolbarAutoHideOnTap;
 			}
 			this.settings.captionAndToolbarAutoHideOnTap = false;
+			this.toolbar.showToolbar();
+			this.toolbar.showCaption();
 
 		},
 
