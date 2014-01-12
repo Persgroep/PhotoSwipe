@@ -6,8 +6,8 @@
 VERSION=3.0.5.1
 DEST=/projects/autotrack
 
-cp -prv ./release/$VERSION/code.photoswipe.jquery-$VERSION.min.js     $DEST/public/scripts/at/image/photoswipe/impl.js
-cp -prv ./release/$VERSION/code.photoswipe.jquery-$VERSION.js         $DEST/public/scripts-src/at/image/photoswipe/impl.js
+cp -prv ./release/$VERSION/code.photoswipe-$VERSION.min.js     $DEST/public/scripts/at/image/photoswipe/impl.js
+cp -prv ./release/$VERSION/code.photoswipe-$VERSION.js         $DEST/public/scripts-src/at/image/photoswipe/impl.js
 cp -prv ./release/$VERSION/photoswipe.css                      $DEST/public/css/photoswipe.css
 cp -prv ./release/$VERSION/icons.png                           $DEST/public/gfx/layout/photoswipe/icons.png
 optipng -o7                                                    $DEST/public/gfx/layout/photoswipe/icons.png
