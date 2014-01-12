@@ -2,8 +2,6 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-/*global isIE8_*/
-
 (function(window, klass, Util){
 	
 	
@@ -444,7 +442,7 @@
 			});
 
 			// Help IE8 a bit by forcing redraw of image :~)
-			if (isIE8_()) {
+			if (Util.Browser.msie8) {
 				this.previous();
 				this.next();
 			}

@@ -80,7 +80,6 @@
 		
 		<concat destfile="${project.build.workdir}/noutil/code.photoswipe.noutil${filepart}-${project.build.version}.js">
 			
-			<fileset dir="." includes="${project.src.dir}/ie8compat.js" />
 			<fileset dir="." includes="${project.src.dir}/image.js" />
 			<fileset dir="." includes="${project.src.dir}/image.class.js" />
 			<fileset dir="." includes="${project.src.dir}/cache.js" />
@@ -135,7 +134,6 @@
 			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/touchelement.js" />
 			<fileset dir="." includes="${project.src.dir}/lib/code.util-${lib.code.util.version}/src/touchelement.class.js" />
 			
-			<fileset dir="." includes="${project.src.dir}/ie8compat.js" />
 			<fileset dir="." includes="${project.src.dir}/image.js" />
 			<fileset dir="." includes="${project.src.dir}/image.class.js" />
 			<fileset dir="." includes="${project.src.dir}/cache.js" />

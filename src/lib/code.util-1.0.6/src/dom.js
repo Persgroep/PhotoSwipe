@@ -2,7 +2,6 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-/*global isIE8_*/
 (function (window, Util) {
 
 	Util.extend(Util, {
@@ -537,7 +536,7 @@
 			 * Function: _getDimension
 			 */
 			_getDimension: function(el, dimension){
-				if (isIE8_()) {
+				if (Util.Browser.msie8) {
 					if (dimension == 'width'){
 						return el.clientWidth;
 					}
