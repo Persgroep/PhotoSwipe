@@ -3,7 +3,26 @@
 // version: %%version%%
 
 (function(window, Util) {
-	
+
+	if (!window.getComputedStyle) {
+		window.getComputedStyle = function(el, pseudo) {
+			this.el = el;
+			this.getPropertyValue = function(prop) {
+				var re = /(\-([a-z]){1})/g;
+				if (prop === 'float') {
+					prop = 'styleFloat';
+				}
+				if (re.test(prop)) {
+					prop = prop.replace(re, function (n, m, o) {
+						return o.toUpperCase();
+					});
+				}
+				return el.currentStyle[prop] || null;
+			};
+			return this;
+		};
+	}
+
 	Util.Browser = {
 	
 		ua: null,
@@ -21,7 +40,8 @@
 		iPhone: null,
 		iPod: null,
 		iOS: null,
-		
+		msie8: null,
+
 		is3dSupported: null,
 		isCSSTransformSupported: null,
 		isTouchSupported: null,
@@ -46,7 +66,8 @@
 			this.iPad = (/ipad/gi).test(window.navigator.platform);
 			this.iPhone = (/iphone/gi).test(window.navigator.platform);
 			this.iPod = (/ipod/gi).test(window.navigator.platform);
-			
+			this.msie8 = window.attachEvent && !window.addEventListener;
+
 			var testEl = document.createElement('div');
 			this.is3dSupported = !Util.isNothing(testEl.style.WebkitPerspective);	
 			this.isCSSTransformSupported = ( !Util.isNothing(testEl.style.WebkitTransform) || !Util.isNothing(testEl.style.MozTransform) || !Util.isNothing(testEl.style.OTransform) || !Util.isNothing(testEl.style.transformProperty) );
@@ -88,6 +109,14 @@
 		
 		isLandscape: function(){
 			return (Util.DOM.windowWidth() > Util.DOM.windowHeight());
+		},
+
+		preventDefault: function(e){
+			return e.preventDefault ? e.preventDefault() : e.returnValue = false;
+		},
+
+		currentTarget: function(e){
+			return e.currentTarget || e.srcElement;
 		}
   };
 	

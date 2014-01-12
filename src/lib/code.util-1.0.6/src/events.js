@@ -87,10 +87,10 @@
 					// DOM element 
 					if (this._isBrowserObject(obj)){
 						if (obj.removeEventListener){
-							obj.removeEventListener(type, handlers, false);
+							obj.removeEventListener(type, handler, false);
 						}
 						else if (obj.detachEvent){
-							obj.detachEvent ('on' + type, handlers);
+							obj.detachEvent ('on' + type, handler);
 						}
 						return;
 					}
