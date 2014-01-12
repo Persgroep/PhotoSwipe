@@ -2,7 +2,6 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-/*global isIE8_*/
 (function (window, Util) {
 
 	Util.extend(Util, {
@@ -537,7 +536,7 @@
 			 * Function: _getDimension
 			 */
 			_getDimension: function(el, dimension){
-				if (isIE8_()) {
+				if (Util.Browser.msie8) {
 					if (dimension == 'width'){
 						return el.clientWidth;
 					}
@@ -701,7 +700,7 @@
 				if (document.documentElement.clientWidth){
 					return document.documentElement.clientWidth;
 				}
-				return document.body.clientWidth
+				return document.body.clientWidth;
 
 			},
 			
@@ -712,7 +711,7 @@
 			 */
 			windowHeight: function(){
 				if (window.innerHeight){
-					return window.innerHeight ;
+					return window.innerHeight;
 				}
 				if (document.documentElement.clientHeight){
 					return document.documentElement.clientHeight;
@@ -728,7 +727,7 @@
 			windowScrollLeft: function(){
 
 				if (window.pageXOffset){
-					return window.pageXOffset
+					return window.pageXOffset;
 				}
 				if (document.body.scrollLeft){
 					return document.body.scrollLeft;
@@ -746,7 +745,7 @@
 			windowScrollTop: function(){
 
 				if (window.pageYOffset){
-					return window.pageYOffset
+					return window.pageYOffset;
 				}
 				if (document.body.scrollTop){
 					return document.body.scrollTop;

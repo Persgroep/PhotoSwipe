@@ -2,8 +2,6 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-/*global preventDefault_, currentTarget_*/
-
 (function(window, Util){
 	
 	
@@ -215,10 +213,10 @@
 	 */
 	PhotoSwipe.onTriggerElementClick = function(e){
 	
-		preventDefault_(e);
+		Util.Browser.preventDefault(e);
 		
 		var instance = this;
-		instance.show(currentTarget_(e));
+		instance.show(Util.Browser.currentTarget(e));
 	
 	};
 	

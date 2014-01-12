@@ -2,8 +2,6 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-/*global preventDefault_*/
-
 (function(window, klass, Util){
 	
 	
@@ -516,7 +514,7 @@
 		 */
 		onTouchStart: function(e){
 			
-			preventDefault_(e);
+			Util.Browser.preventDefault(e);
 			Util.Events.remove(this.toolbarEl, 'click', this.clickHandler);
 			this.handleTap(e);
 			
@@ -529,7 +527,7 @@
 		 */
 		onTouchMove: function(e){
 		
-			preventDefault_(e);
+			Util.Browser.preventDefault(e);
 		
 		},
 		
@@ -540,7 +538,7 @@
 		 */
 		onClick: function(e){
 			
-			preventDefault_(e);
+			Util.Browser.preventDefault(e);
 			this.handleTap(e);
 			
 		}

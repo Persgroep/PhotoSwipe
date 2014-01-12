@@ -2,8 +2,6 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-/*global preventDefault_, isIE8_*/
-
 (function(window, klass, Util, Cache, DocumentOverlay, Carousel, Toolbar, UILayer, ZoomPanRotate){
 	
 	
@@ -310,7 +308,7 @@
 			});
 			
 			// Fade in the document overlay
-			if (isIE8_()){
+			if (Util.Browser.msie8){
 				this.onDocumentOverlayFadeIn.bind(this)();
 			} else {
 				this.documentOverlay.fadeIn(this.settings.fadeInSpeed, this.onDocumentOverlayFadeIn.bind(this));
@@ -341,7 +339,7 @@
 			this.documentOverlay = new DocumentOverlay.DocumentOverlayClass(this.settings);
 			this.carousel = new Carousel.CarouselClass(this.cache, this.settings);
 			this.uiLayer = new UILayer.UILayerClass(this.settings);
-			if (isIE8_()) {
+			if (Util.Browser.msie8){
 				this.uiLayer.el.style.visibility = 'hidden';
 			}
 			if (!this.settings.captionAndToolbarHide){
@@ -982,18 +980,18 @@
 		onKeyDown: function(e){
 			
 			if (e.keyCode === 37) { // Left
-				preventDefault_(e);
+				Util.Browser.preventDefault(e);
 				this.previous();
 			}
 			else if (e.keyCode === 39) { // Right
-				preventDefault_(e);
+				Util.Browser.preventDefault(e);
 				this.next();
 			}
 			else if (e.keyCode === 38 || e.keyCode === 40) { // Up and down
-				preventDefault_(e);
+				Util.Browser.preventDefault(e);
 			}
 			else if (e.keyCode === 27) { // Escape
-				preventDefault_(e);
+				Util.Browser.preventDefault(e);
 				this.hide();
 			}
 			else if (e.keyCode === 32) { // Spacebar
@@ -1003,10 +1001,10 @@
 				else{
 					this.hide();
 				}
-				preventDefault_(e);
+				Util.Browser.preventDefault(e);
 			}
 			else if (e.keyCode === 13) { // Enter
-				preventDefault_(e);
+				Util.Browser.preventDefault(e);
 				this.play();
 			}
 			
@@ -1147,6 +1145,7 @@
 		 * Function: onCarouselSlideByEnd
 		 */
 		onCarouselSlideByEnd: function(e){
+			var i, n, img;
 			
 			this.currentIndex = e.cacheIndex;
 			
@@ -1165,11 +1164,18 @@
 				action: e.action,
 				index: e.cacheIndex
 			});
-		
+
+			if (!Util.Browser.isTouchSupported && Util.Browser.msie8) {
+				// IE8 workaround, as the touch events don't work
+				for (i=0, n=this.cache.images.length; i<n; i++){
+					img = this.cache.images[i].imageEl;
+					Util.Events.remove(img, 'click', this.videoThumbToEmbedCodeHandler.bind(this));
+					Util.Events.add(img, 'click', this.videoThumbToEmbedCodeHandler.bind(this));
+				}
+			}
+
 		},
-		
-		
-		
+
 		/*
 		 * Function: onToolbarTap
 		 */
@@ -1391,6 +1397,8 @@
 				this.captionAndToolbarAutoHideOnTapOriginalValue = this.settings.captionAndToolbarAutoHideOnTap;
 			}
 			this.settings.captionAndToolbarAutoHideOnTap = false;
+			this.toolbar.showToolbar();
+			this.toolbar.showCaption();
 
 		},
 

@@ -2,8 +2,6 @@
 // Licensed under the MIT license
 // version: %%version%%
 
-/*global isIE8_*/
-
 (function(window, klass, Util){
 	
 	
@@ -235,8 +233,8 @@
 					dynamicObjectEl.style.display = 'block';
 					imageEl.style.display = 'none';
 
-					toolbarHeight = this.el.getBoundingClientRect().height - toolbar.getBoundingClientRect().top + 5;
-					captionHeight = caption.getElementsByTagName('div')[0].getBoundingClientRect().height + 5;
+					toolbarHeight = Util.DOM.height(this.el) - toolbar.getBoundingClientRect().top + 5;
+					captionHeight = Util.DOM.height(caption.getElementsByTagName('div')[0])+ 5;
 
 					/**
 					 * The Vimeo player requires the carousel to be above the toolbar and caption w/regards to zIndex.
@@ -247,13 +245,13 @@
 					this.el.style.zIndex = this.settings.zIndexCarousel;
 					this.el.setAttribute('data-original-height', this.el.style.height);
 					this.el.setAttribute('data-original-top', this.el.style.top);
-					this.el.style.height = (this.el.getBoundingClientRect().height -
+					this.el.style.height = (Util.DOM.height(this.el) -
 						toolbarHeight - captionHeight) + 'px';
 					this.el.style.top = (this.el.getBoundingClientRect().top +
-						captionHeight + window.pageYOffset) + 'px';
+						captionHeight + Util.DOM.windowScrollTop()) + 'px';
 
 					if ((toolbarHeight + captionHeight) > 0){
-						dynamicObjectEl.style.height = (dynamicObjectEl.getBoundingClientRect().height -
+						dynamicObjectEl.style.height = (Util.DOM.height(dynamicObjectEl) -
 							toolbarHeight - captionHeight) + 'px';
 					}
 				}
@@ -444,7 +442,7 @@
 			});
 
 			// Help IE8 a bit by forcing redraw of image :~)
-			if (isIE8_()) {
+			if (Util.Browser.msie8) {
 				this.previous();
 				this.next();
 			}
