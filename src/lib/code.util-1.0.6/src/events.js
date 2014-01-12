@@ -28,9 +28,14 @@
 				
 				// DOM element 
 				if (this._isBrowserObject(obj)){
-					obj.addEventListener(type, handler, false);
+					if (obj.addEventListener){
+						obj.addEventListener(type, handler, false);
+					}
+					else if (obj.attachEvent){
+						obj.attachEvent('on' + type, handler);
+					}
 				}
-				
+
 			},
 			
 			
@@ -58,7 +63,12 @@
 						
 						if (this._isBrowserObject(obj)){
 							for (i=0, j=handlers.length; i<j; i++){
-								obj.removeEventListener(type, handlers[i], false);
+								if (obj.removeEventListener){
+									obj.removeEventListener(type, handlers[i], false);
+								}
+								else if (obj.detachEvent){
+									obj.detachEvent ('on' + type, handlers[i]);
+								}
 							}
 						}
 						
@@ -76,7 +86,12 @@
 					
 					// DOM element 
 					if (this._isBrowserObject(obj)){
-						obj.removeEventListener(type, handler, false);
+						if (obj.removeEventListener){
+							obj.removeEventListener(type, handlers, false);
+						}
+						else if (obj.detachEvent){
+							obj.detachEvent ('on' + type, handlers);
+						}
 						return;
 					}
 				
