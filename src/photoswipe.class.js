@@ -2,13 +2,14 @@
 // Licensed under the MIT license
 // version: %%version%%
 
+/*global preventDefault_, isIE8_*/
+
 (function(window, klass, Util, Cache, DocumentOverlay, Carousel, Toolbar, UILayer, ZoomPanRotate){
 	
 	
 	Util.registerNamespace('Code.PhotoSwipe');
 	var PhotoSwipe = window.Code.PhotoSwipe;
-	
-	
+
 	PhotoSwipe.PhotoSwipeClass = klass({
 		
 		
@@ -255,8 +256,8 @@
 		 * Function: show
 		 */
 		show: function(obj){
-			
-			var i, j;
+
+			var i, j, iestr, iestr2;
 			
 			this._isResettingPosition = false;
 			this.backButtonClicked = false;
@@ -269,7 +270,10 @@
 				
 				this.currentIndex = -1;
 				for (i=0, j=this.originalImages.length; i<j; i++){
-					if (this.originalImages[i] === obj){
+					iestr  = String + this.originalImages[i];
+					iestr2 = String + obj.parentNode;
+
+					if (this.originalImages[i] === obj || iestr === iestr2){
 						this.currentIndex = i;
 						break;
 					}
@@ -306,8 +310,11 @@
 			});
 			
 			// Fade in the document overlay
-			this.documentOverlay.fadeIn(this.settings.fadeInSpeed, this.onDocumentOverlayFadeIn.bind(this));
-			
+			if (isIE8_()){
+				this.onDocumentOverlayFadeIn.bind(this)();
+			} else {
+				this.documentOverlay.fadeIn(this.settings.fadeInSpeed, this.onDocumentOverlayFadeIn.bind(this));
+			}
 		},
 		
 		
@@ -334,6 +341,9 @@
 			this.documentOverlay = new DocumentOverlay.DocumentOverlayClass(this.settings);
 			this.carousel = new Carousel.CarouselClass(this.cache, this.settings);
 			this.uiLayer = new UILayer.UILayerClass(this.settings);
+			if (isIE8_()) {
+				this.uiLayer.el.style.visibility = 'hidden';
+			}
 			if (!this.settings.captionAndToolbarHide){
 				this.toolbar = new Toolbar.ToolbarClass(this.cache, this.settings);
 			}
@@ -362,13 +372,18 @@
 					return;
 				}
 			}
-			
+
 			this._isResettingPosition = true;
 			
 			this.windowDimensions = newWindowDimensions;
 			
 			this.destroyZoomPanRotate();
-			
+
+			if (!this.documentOverlay) {
+				// This was added as a fudge for IE8 :-)
+				return;
+			}
+
 			this.documentOverlay.resetPosition();
 			this.carousel.resetPosition();
 			
@@ -548,7 +563,7 @@
 			}
 			
 			if (Util.isNothing(this.documentOverlay)){
-				throw "Code.PhotoSwipe.PhotoSwipeClass.hide: PhotoSwipe instance is already hidden";
+				return;
 			}
 			
 			if (!Util.isNothing(this.hiding)){
@@ -853,7 +868,7 @@
 				var el = (this.settings.target === window) ? window.document.body : this.settings.target;
 				
 				Util.DOM.removeClass(el, PhotoSwipe.CssClasses.buildingBody);
-                                Util.DOM.addClass(window.document.getElementsByTagName("html")[0], PhotoSwipe.CssClasses.activeBody);
+				Util.DOM.addClass(window.document.getElementsByTagName("html")[0], PhotoSwipe.CssClasses.activeBody);
 				Util.DOM.addClass(el, PhotoSwipe.CssClasses.activeBody);
 				
 				this.addEventHandlers();
@@ -967,18 +982,18 @@
 		onKeyDown: function(e){
 			
 			if (e.keyCode === 37) { // Left
-				e.preventDefault();
+				preventDefault_(e);
 				this.previous();
 			}
 			else if (e.keyCode === 39) { // Right
-				e.preventDefault();
+				preventDefault_(e);
 				this.next();
 			}
 			else if (e.keyCode === 38 || e.keyCode === 40) { // Up and down
-				e.preventDefault();
+				preventDefault_(e);
 			}
 			else if (e.keyCode === 27) { // Escape
-				e.preventDefault();
+				preventDefault_(e);
 				this.hide();
 			}
 			else if (e.keyCode === 32) { // Spacebar
@@ -988,10 +1003,10 @@
 				else{
 					this.hide();
 				}
-				e.preventDefault();
+				preventDefault_(e);
 			}
 			else if (e.keyCode === 13) { // Enter
-				e.preventDefault();
+				preventDefault_(e);
 				this.play();
 			}
 			
