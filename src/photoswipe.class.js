@@ -7,8 +7,7 @@
 	
 	Util.registerNamespace('Code.PhotoSwipe');
 	var PhotoSwipe = window.Code.PhotoSwipe;
-	
-	
+
 	PhotoSwipe.PhotoSwipeClass = klass({
 		
 		
@@ -255,8 +254,8 @@
 		 * Function: show
 		 */
 		show: function(obj){
-			
-			var i, j;
+
+			var i, j, iestr, iestr2;
 			
 			this._isResettingPosition = false;
 			this.backButtonClicked = false;
@@ -269,7 +268,10 @@
 				
 				this.currentIndex = -1;
 				for (i=0, j=this.originalImages.length; i<j; i++){
-					if (this.originalImages[i] === obj){
+					iestr  = String + this.originalImages[i];
+					iestr2 = String + obj.parentNode;
+
+					if (this.originalImages[i] === obj || iestr === iestr2){
 						this.currentIndex = i;
 						break;
 					}
@@ -306,8 +308,11 @@
 			});
 			
 			// Fade in the document overlay
-			this.documentOverlay.fadeIn(this.settings.fadeInSpeed, this.onDocumentOverlayFadeIn.bind(this));
-			
+			if (Util.Browser.msie8){
+				this.onDocumentOverlayFadeIn.bind(this)();
+			} else {
+				this.documentOverlay.fadeIn(this.settings.fadeInSpeed, this.onDocumentOverlayFadeIn.bind(this));
+			}
 		},
 		
 		
@@ -334,6 +339,9 @@
 			this.documentOverlay = new DocumentOverlay.DocumentOverlayClass(this.settings);
 			this.carousel = new Carousel.CarouselClass(this.cache, this.settings);
 			this.uiLayer = new UILayer.UILayerClass(this.settings);
+			if (Util.Browser.msie8){
+				this.uiLayer.el.style.visibility = 'hidden';
+			}
 			if (!this.settings.captionAndToolbarHide){
 				this.toolbar = new Toolbar.ToolbarClass(this.cache, this.settings);
 			}
@@ -362,13 +370,18 @@
 					return;
 				}
 			}
-			
+
 			this._isResettingPosition = true;
 			
 			this.windowDimensions = newWindowDimensions;
 			
 			this.destroyZoomPanRotate();
-			
+
+			if (!this.documentOverlay) {
+				// This was added as a fudge for IE8 :-)
+				return;
+			}
+
 			this.documentOverlay.resetPosition();
 			this.carousel.resetPosition();
 			
@@ -548,7 +561,7 @@
 			}
 			
 			if (Util.isNothing(this.documentOverlay)){
-				throw "Code.PhotoSwipe.PhotoSwipeClass.hide: PhotoSwipe instance is already hidden";
+				return;
 			}
 			
 			if (!Util.isNothing(this.hiding)){
@@ -853,7 +866,7 @@
 				var el = (this.settings.target === window) ? window.document.body : this.settings.target;
 				
 				Util.DOM.removeClass(el, PhotoSwipe.CssClasses.buildingBody);
-                                Util.DOM.addClass(window.document.getElementsByTagName("html")[0], PhotoSwipe.CssClasses.activeBody);
+				Util.DOM.addClass(window.document.getElementsByTagName("html")[0], PhotoSwipe.CssClasses.activeBody);
 				Util.DOM.addClass(el, PhotoSwipe.CssClasses.activeBody);
 				
 				this.addEventHandlers();
@@ -967,18 +980,18 @@
 		onKeyDown: function(e){
 			
 			if (e.keyCode === 37) { // Left
-				e.preventDefault();
+				Util.Browser.preventDefault(e);
 				this.previous();
 			}
 			else if (e.keyCode === 39) { // Right
-				e.preventDefault();
+				Util.Browser.preventDefault(e);
 				this.next();
 			}
 			else if (e.keyCode === 38 || e.keyCode === 40) { // Up and down
-				e.preventDefault();
+				Util.Browser.preventDefault(e);
 			}
 			else if (e.keyCode === 27) { // Escape
-				e.preventDefault();
+				Util.Browser.preventDefault(e);
 				this.hide();
 			}
 			else if (e.keyCode === 32) { // Spacebar
@@ -988,10 +1001,10 @@
 				else{
 					this.hide();
 				}
-				e.preventDefault();
+				Util.Browser.preventDefault(e);
 			}
 			else if (e.keyCode === 13) { // Enter
-				e.preventDefault();
+				Util.Browser.preventDefault(e);
 				this.play();
 			}
 			
@@ -1132,6 +1145,7 @@
 		 * Function: onCarouselSlideByEnd
 		 */
 		onCarouselSlideByEnd: function(e){
+			var i, n, img;
 			
 			this.currentIndex = e.cacheIndex;
 			
@@ -1139,18 +1153,29 @@
 				this.toolbar.setCaption(this.currentIndex);
 				this.toolbar.setToolbarStatus(this.currentIndex);
 			}
-			
+
+			if (this.captionAndToolbarAutoHideOnTapOriginalValue){
+				this.settings.captionAndToolbarAutoHideOnTap = this.captionAndToolbarAutoHideOnTapOriginalValue;
+			}
+
 			Util.Events.fire(this, {
 				type: PhotoSwipe.EventTypes.onDisplayImage,
 				target: this,
 				action: e.action,
 				index: e.cacheIndex
 			});
-		
+
+			if (!Util.Browser.isTouchSupported && Util.Browser.msie8) {
+				// IE8 workaround, as the touch events don't work
+				for (i=0, n=this.cache.images.length; i<n; i++){
+					img = this.cache.images[i].imageEl;
+					Util.Events.remove(img, 'click', this.videoThumbToEmbedCodeHandler.bind(this));
+					Util.Events.add(img, 'click', this.videoThumbToEmbedCodeHandler.bind(this));
+				}
+			}
+
 		},
-		
-		
-		
+
 		/*
 		 * Function: onToolbarTap
 		 */
@@ -1366,6 +1391,15 @@
 
 			// Make sure the positions are updated correctly
 			this.carousel.resetPosition();
+
+			// Make sure that when a video is displayed the controls stay visible
+			if (!this.captionAndToolbarAutoHideOnTapOriginalValue){
+				this.captionAndToolbarAutoHideOnTapOriginalValue = this.settings.captionAndToolbarAutoHideOnTap;
+			}
+			this.settings.captionAndToolbarAutoHideOnTap = false;
+			this.toolbar.showToolbar();
+			this.toolbar.showCaption();
+
 		},
 
 		onToolbarClickUndoVimeoFixes: function(e){

@@ -213,10 +213,10 @@
 	 */
 	PhotoSwipe.onTriggerElementClick = function(e){
 	
-		e.preventDefault();
+		Util.Browser.preventDefault(e);
 		
 		var instance = this;
-		instance.show(e.currentTarget);
+		instance.show(Util.Browser.currentTarget(e));
 	
 	};
 	

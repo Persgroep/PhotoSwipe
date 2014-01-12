@@ -3,7 +3,7 @@
 // version: %%version%%
 
 (function (window, Util) {
-	
+
 	Util.extend(Util, {
 		
 		DOM: {
@@ -121,7 +121,7 @@
 						retval.setAttribute(attribute, attributes[attribute]);
 					}
 				}
-    
+	
 				retval.innerHTML = content || '';
 				
 				return retval;
@@ -357,7 +357,7 @@
 			hasClass: function(el, className){
 				
 				var re = new RegExp('(?:^|\\s+)' + className + '(?:\\s+|$)');
-        return re.test(Util.DOM.getAttribute(el, 'class', ''));
+				return re.test(Util.DOM.getAttribute(el, 'class', ''));
 				
 			},
 			
@@ -536,7 +536,15 @@
 			 * Function: _getDimension
 			 */
 			_getDimension: function(el, dimension){
-				
+				if (Util.Browser.msie8) {
+					if (dimension == 'width'){
+						return el.clientWidth;
+					}
+					if (dimension == 'height'){
+						return el.clientHeight;
+					}
+				}
+
 				var 
 					retval = window.parseInt(window.getComputedStyle(el,'').getPropertyValue(dimension)),
 					styleBackup;
@@ -554,7 +562,11 @@
 					el.style.left = '-1000000px';
 					
 					retval = window.parseInt(window.getComputedStyle(el,'').getPropertyValue(dimension));
-					
+					// IE8 returns 'auto', in that case use zero as fallback
+					if (isNaN(retval)) {
+						retval = 0;
+					}
+
 					el.style.display = styleBackup.display;
 					el.style.left = styleBackup.left;
 				}
@@ -651,9 +663,13 @@
 			 * Function: bodyOuterWidth
 			 */
 			bodyOuterWidth: function(){
-				
-				return Util.DOM.outerWidth(document.body);
-			
+
+				var p = Util.DOM.outerWidth(document.body);
+				if (isNaN(p)) {
+					return document.documentElement.offsetWidth;
+				}
+				return p;
+
 			},
 			
 			
@@ -662,9 +678,13 @@
 			 * Function: bodyOuterHeight
 			 */
 			bodyOuterHeight: function(){
-				
-				return Util.DOM.outerHeight(document.body);
-			
+
+				var p = Util.DOM.outerHeight(document.body);
+				if (isNaN(p)) {
+					return document.documentElement.offsetHeight;
+				}
+				return p;
+
 			},
 			
 			
@@ -673,9 +693,15 @@
 			 * Function: windowWidth
 			 */
 			windowWidth: function(){
-			
-				return window.innerWidth;
-			
+
+				if (window.innerWidth){
+					return window.innerWidth;
+				}
+				if (document.documentElement.clientWidth){
+					return document.documentElement.clientWidth;
+				}
+				return document.body.clientWidth;
+
 			},
 			
 			
@@ -684,9 +710,13 @@
 			 * Function: windowHeight
 			 */
 			windowHeight: function(){
-			
-				return window.innerHeight;
-			
+				if (window.innerHeight){
+					return window.innerHeight;
+				}
+				if (document.documentElement.clientHeight){
+					return document.documentElement.clientHeight;
+				}
+				return document.body.clientHeight;
 			},
 			
 			
@@ -695,9 +725,16 @@
 			 * Function: windowScrollLeft
 			 */
 			windowScrollLeft: function(){
-			
-				return window.pageXOffset;
-			
+
+				if (window.pageXOffset){
+					return window.pageXOffset;
+				}
+				if (document.body.scrollLeft){
+					return document.body.scrollLeft;
+				}
+
+				return document.documentElement.scrollLeft;
+
 			},
 			
 			
@@ -706,9 +743,15 @@
 			 * Function: windowScrollTop
 			 */
 			windowScrollTop: function(){
-			
-				return window.pageYOffset;
-			
+
+				if (window.pageYOffset){
+					return window.pageYOffset;
+				}
+				if (document.body.scrollTop){
+					return document.body.scrollTop;
+				}
+				return document.documentElement.scrollTop;
+
 			}
 			
 		}

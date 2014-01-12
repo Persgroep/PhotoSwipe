@@ -233,8 +233,8 @@
 			 */
 			_onTransitionEnd: function(e){
 				
-				Util.Events.remove(e.currentTarget, this._transitionEndLabel, this._getTransitionEndHandler());
-				this._leaveTransforms(e.currentTarget);
+				Util.Events.remove(Util.Browser.currentTarget(e), this._transitionEndLabel, this._getTransitionEndHandler());
+				this._leaveTransforms(Util.Browser.currentTarget(e));
 			
 			},
 			

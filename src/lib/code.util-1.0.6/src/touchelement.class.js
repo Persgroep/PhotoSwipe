@@ -191,7 +191,7 @@
 							point: this.touchEndPoint,
 							action: (distX < 0) ? Util.TouchElement.ActionTypes.swipeLeft : Util.TouchElement.ActionTypes.swipeRight,
 							targetEl: e.target,
-							currentTargetEl: e.currentTarget
+							currentTargetEl: Util.Browser.currentTarget(e)
 						});
 						return;
 
@@ -206,7 +206,7 @@
 							point: this.touchEndPoint,
 							action: (distY < 0) ? Util.TouchElement.ActionTypes.swipeUp : Util.TouchElement.ActionTypes.swipeDown,
 							targetEl: e.target,
-							currentTargetEl: e.currentTarget
+							currentTargetEl: Util.Browser.currentTarget(e)
 						});
 						return;
 
@@ -224,7 +224,7 @@
 					action: Util.TouchElement.ActionTypes.touchMoveEnd,
 					point: this.touchEndPoint,
 					targetEl: e.target,
-					currentTargetEl: e.currentTarget
+					currentTargetEl: Util.Browser.currentTarget(e)
 				});
 				return;
 			}
@@ -238,7 +238,7 @@
 					point: this.touchEndPoint,
 					action: Util.TouchElement.ActionTypes.tap,
 					targetEl: e.target,
-					currentTargetEl: e.currentTarget
+					currentTargetEl: Util.Browser.currentTarget(e)
 				});
 				return;
 
@@ -256,7 +256,7 @@
 						point: this.touchEndPoint,
 						action: Util.TouchElement.ActionTypes.tap,
 						targetEl: e.target,
-						currentTargetEl: e.currentTarget
+						currentTargetEl: Util.Browser.currentTarget(e)
 					});
 
 				}.bind(this), this.doubleTapSpeed);
@@ -275,7 +275,7 @@
 					point: this.touchEndPoint,
 					action: Util.TouchElement.ActionTypes.doubleTap,
 					targetEl: e.target,
-					currentTargetEl: e.currentTarget
+					currentTargetEl: Util.Browser.currentTarget(e)
 				});
 
 			}
@@ -290,7 +290,7 @@
 		onTouchStart: function(e){
 
 			if (this.captureSettings.preventDefaultTouchEvents && !this.captureSettings.allowVerticalScroll){
-				e.preventDefault();
+				Util.Browser.preventDefault(e);
 			}
 
 			// No longer need mouse events
@@ -315,7 +315,7 @@
 				action: Util.TouchElement.ActionTypes.touchStart,
 				point: this.touchStartPoint,
 				targetEl: e.target,
-				currentTargetEl: e.currentTarget
+				currentTargetEl: Util.Browser.currentTarget(e)
 			});
 
 
@@ -345,7 +345,7 @@
 			}
 
 			if (this.captureSettings.preventDefaultTouchEvents){
-				e.preventDefault();
+				Util.Browser.preventDefault(e);
 			}
 
 			Util.Events.fire(this, {
@@ -354,7 +354,7 @@
 				action: Util.TouchElement.ActionTypes.touchMove,
 				point: point,
 				targetEl: e.target,
-				currentTargetEl: e.currentTarget
+				currentTargetEl: Util.Browser.currentTarget(e)
 			});
 
 		},
@@ -387,7 +387,7 @@
 		   }
 
 			if (this.captureSettings.preventDefaultTouchEvents){
-				e.preventDefault();
+				Util.Browser.preventDefault(e);
 			}
 
 			Util.Events.fire(this, {
@@ -396,7 +396,7 @@
 				action: Util.TouchElement.ActionTypes.touchEnd,
 				point: this.touchEndPoint,
 				targetEl: e.target,
-				currentTargetEl: e.currentTarget
+				currentTargetEl: Util.Browser.currentTarget(e)
 			});
 
 			this.fireTouchEvent(e);
@@ -410,7 +410,7 @@
 		 */
 		onMouseDown: function(e){
 
-			e.preventDefault();
+			Util.Browser.preventDefault(e);
 
 			// No longer need touch events
 			Util.Events.remove(this.el, 'touchstart', this.mouseDownHandler);
@@ -434,7 +434,7 @@
 				action: Util.TouchElement.ActionTypes.touchStart,
 				point: this.touchStartPoint,
 				targetEl: e.target,
-				currentTargetEl: e.currentTarget
+				currentTargetEl: Util.Browser.currentTarget(e)
 			});
 
 		},
@@ -446,7 +446,7 @@
 		 */
 		onMouseMove: function(e){
 
-			e.preventDefault();
+			Util.Browser.preventDefault(e);
 
 			Util.Events.fire(this, {
 				type: Util.TouchElement.EventTypes.onTouch,
@@ -454,7 +454,7 @@
 				action: Util.TouchElement.ActionTypes.touchMove,
 				point: Util.Events.getMousePosition(e),
 				targetEl: e.target,
-				currentTargetEl: e.currentTarget
+				currentTargetEl: Util.Browser.currentTarget(e)
 			});
 
 		},
@@ -466,7 +466,7 @@
 		 */
 		onMouseUp: function(e){
 
-			e.preventDefault();
+			Util.Browser.preventDefault(e);
 
 			if (this.captureSettings.move){
 				Util.Events.remove(this.el, 'mousemove', this.mouseMoveHandler);
@@ -482,7 +482,7 @@
 				action: Util.TouchElement.ActionTypes.touchEnd,
 				point: this.touchEndPoint,
 				targetEl: e.target,
-				currentTargetEl: e.currentTarget
+				currentTargetEl: Util.Browser.currentTarget(e)
 			});
 
 			this.fireTouchEvent(e);
@@ -504,7 +504,7 @@
 				return;
 			}
 
-			e.preventDefault();
+			Util.Browser.preventDefault(e);
 
 			if (this.captureSettings.move){
 				Util.Events.remove(this.el, 'mousemove', this.mouseMoveHandler);
@@ -520,7 +520,7 @@
 				action: Util.TouchElement.ActionTypes.touchEnd,
 				point: this.touchEndPoint,
 				targetEl: e.target,
-				currentTargetEl: e.currentTarget
+				currentTargetEl: Util.Browser.currentTarget(e)
 			});
 
 			this.fireTouchEvent(e);
@@ -534,7 +534,7 @@
 		 */
 		onGestureStart: function(e){
 
-			e.preventDefault();
+			Util.Browser.preventDefault(e);
 
 			var touchEvent = Util.Events.getTouchEvent(e);
 
@@ -545,7 +545,7 @@
 				scale: touchEvent.scale,
 				rotation: touchEvent.rotation,
 				targetEl: e.target,
-				currentTargetEl: e.currentTarget
+				currentTargetEl: Util.Browser.currentTarget(e)
 			});
 
 		},
@@ -557,7 +557,7 @@
 		 */
 		onGestureChange: function(e){
 
-			e.preventDefault();
+			Util.Browser.preventDefault(e);
 
 			var touchEvent = Util.Events.getTouchEvent(e);
 
@@ -568,7 +568,7 @@
 				scale: touchEvent.scale,
 				rotation: touchEvent.rotation,
 				targetEl: e.target,
-				currentTargetEl: e.currentTarget
+				currentTargetEl: Util.Browser.currentTarget(e)
 			});
 
 		},
@@ -580,7 +580,7 @@
 		 */
 		onGestureEnd: function(e){
 
-			e.preventDefault();
+			Util.Browser.preventDefault(e);
 
 			var touchEvent = Util.Events.getTouchEvent(e);
 
@@ -591,7 +591,7 @@
 				scale: touchEvent.scale,
 				rotation: touchEvent.rotation,
 				targetEl: e.target,
-				currentTargetEl: e.currentTarget
+				currentTargetEl: Util.Browser.currentTarget(e)
 			});
 
 		}
