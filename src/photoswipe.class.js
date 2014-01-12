@@ -1147,6 +1147,7 @@
 		 * Function: onCarouselSlideByEnd
 		 */
 		onCarouselSlideByEnd: function(e){
+			var i, n, img;
 			
 			this.currentIndex = e.cacheIndex;
 			
@@ -1165,10 +1166,22 @@
 				action: e.action,
 				index: e.cacheIndex
 			});
-		
+
+			if (isIE8_()) {
+				// IE8 workaround, as the touch events won't do ****
+				for (i=0, n=this.cache.images.length; i<n; i++){
+					img = this.cache.images[i].imageEl;
+					Util.Events.remove(img, 'click', this.ie8ClickHandler.bind(this));
+					Util.Events.add(img, 'click', this.ie8ClickHandler.bind(this));
+				}
+			}
+
 		},
-		
-		
+
+		ie8ClickHandler: function(){
+			this.videoThumbToEmbedCodeHandler();
+		},
+
 		
 		/*
 		 * Function: onToolbarTap
