@@ -1154,7 +1154,11 @@
 				this.toolbar.setCaption(this.currentIndex);
 				this.toolbar.setToolbarStatus(this.currentIndex);
 			}
-			
+
+			if (this.captionAndToolbarAutoHideOnTapOriginalValue){
+				this.settings.captionAndToolbarAutoHideOnTap = this.captionAndToolbarAutoHideOnTapOriginalValue;
+			}
+
 			Util.Events.fire(this, {
 				type: PhotoSwipe.EventTypes.onDisplayImage,
 				target: this,
@@ -1381,6 +1385,13 @@
 
 			// Make sure the positions are updated correctly
 			this.carousel.resetPosition();
+
+			// Make sure that when a video is displayed the controls stay visible
+			if (!this.captionAndToolbarAutoHideOnTapOriginalValue){
+				this.captionAndToolbarAutoHideOnTapOriginalValue = this.settings.captionAndToolbarAutoHideOnTap;
+			}
+			this.settings.captionAndToolbarAutoHideOnTap = false;
+
 		},
 
 		onToolbarClickUndoVimeoFixes: function(e){
