@@ -2,6 +2,8 @@
 // Licensed under the MIT license
 // version: %%version%%
 
+/*global isIE8_*/
+
 (function(window, klass, Util){
 	
 	
@@ -440,7 +442,12 @@
 				action: PhotoSwipe.Carousel.SlideByAction.current,
 				cacheIndex: this.currentCacheIndex
 			});
-			
+
+			// Help IE8 a bit by forcing redraw of image :~)
+			if (isIE8_()) {
+				this.previous();
+				this.next();
+			}
 		},
 		
 		
@@ -783,7 +790,7 @@
 		 * Function: onSlideByEnd
 		 */
 		onSlideByEnd: function(e){
-			
+
 			if (Util.isNothing(this.isSliding)){
 				return;
 			}
