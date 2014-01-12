@@ -2,6 +2,8 @@
 // Licensed under the MIT license
 // version: %%version%%
 
+/*global preventDefault_*/
+
 (function(window, klass, Util){
 	
 	
@@ -356,6 +358,11 @@
 			this.clearTimeout();
 			
 			var action;
+
+			// IE8 fix
+			if (typeof e.target === 'undefined' && e.srcElement) {
+				e.target = e.srcElement.parentNode;
+			}
 			
 			if (e.target === this.nextEl || Util.DOM.isChildOf(e.target, this.nextEl)){
 				action = PhotoSwipe.Toolbar.ToolbarAction.next;
@@ -509,7 +516,7 @@
 		 */
 		onTouchStart: function(e){
 			
-			e.preventDefault();
+			preventDefault_(e);
 			Util.Events.remove(this.toolbarEl, 'click', this.clickHandler);
 			this.handleTap(e);
 			
@@ -522,7 +529,7 @@
 		 */
 		onTouchMove: function(e){
 		
-			e.preventDefault();
+			preventDefault_(e);
 		
 		},
 		
@@ -533,7 +540,7 @@
 		 */
 		onClick: function(e){
 			
-			e.preventDefault();
+			preventDefault_(e);
 			this.handleTap(e);
 			
 		}

@@ -115,6 +115,10 @@
 				);
 			
 			}
+			else {
+				// No transition effect fallback..
+				this.slideByEndHandler();
+			}
 			
 			
 		}
