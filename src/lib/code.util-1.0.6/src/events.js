@@ -30,7 +30,8 @@
 				if (this._isBrowserObject(obj)){
 					if (obj.addEventListener){
 						obj.addEventListener(type, handler, false);
-					} else if (obj.attachEvent){
+					}
+					else if (obj.attachEvent){
 						obj.attachEvent('on' + type, handler);
 					}
 				}
@@ -87,6 +88,7 @@
 					if (this._isBrowserObject(obj)){
 						if (obj.removeEventListener){
 							obj.removeEventListener(type, handlers, false);
+						}
 						else if (obj.detachEvent){
 							obj.detachEvent ('on' + type, handlers);
 						}
