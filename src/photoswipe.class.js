@@ -1165,7 +1165,7 @@
 				index: e.cacheIndex
 			});
 
-			if (!Util.Browser.isTouchSupported && Util.Browser.msie8) {
+			if (Util.Browser.msie8) {
 				// IE8 workaround, as the touch events don't work
 				for (i=0, n=this.cache.images.length; i<n; i++){
 					img = this.cache.images[i].imageEl;
