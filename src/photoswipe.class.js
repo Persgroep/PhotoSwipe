@@ -471,6 +471,10 @@
 				if (this.settings.jQueryMobile){
 					window.location.hash = this.settings.jQueryMobileDialogHash;
 				}
+				else if (this.settings.customHistoryHashValueFunction){
+					this.currentHistoryHashValue = this.settings.customHistoryHashValueFunction();
+					window.location.hash = this.currentHistoryHashValue;
+				}
 				else{
 					this.currentHistoryHashValue = 'PhotoSwipe' + new Date().getTime().toString();
 					window.location.hash = this.currentHistoryHashValue;
