@@ -233,8 +233,8 @@
 					dynamicObjectEl.style.display = 'block';
 					imageEl.style.display = 'none';
 
-					toolbarHeight = Util.DOM.height(this.el) - toolbar.getBoundingClientRect().top + 5;
-					captionHeight = Util.DOM.height(caption.getElementsByTagName('div')[0])+ 5;
+					toolbarHeight = Util.DOM.height(toolbar) + 5;
+					captionHeight = Util.DOM.height(caption) + 5;
 
 					/**
 					 * The Vimeo player requires the carousel to be above the toolbar and caption w/regards to zIndex.
@@ -244,7 +244,7 @@
 					 */
 					this.el.style.zIndex = this.settings.zIndexCarousel;
 					this.el.setAttribute('data-original-height', this.el.style.height);
-					this.el.setAttribute('data-original-top', this.el.style.top);
+					this.el.setAttribute('data-original-top', (window.parseInt(this.el.style.top, 0) + captionHeight) + 'px');
 					this.el.style.height = (Util.DOM.height(this.el) -
 						toolbarHeight - captionHeight) + 'px';
 					this.el.style.top = (this.el.getBoundingClientRect().top +
