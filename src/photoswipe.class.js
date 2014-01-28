@@ -341,6 +341,12 @@
 			this.uiLayer = new UILayer.UILayerClass(this.settings);
 			if (Util.Browser.msie8){
 				this.uiLayer.el.style.visibility = 'hidden';
+				Util.Events.add(this.carousel.el, 'click', function(e){
+					this.carousel.stopSlideshow();
+					this.toolbar.show(this.currentIndex);
+					this.toolbar.toolbarEl.style.visibility = 'visible';
+					this.toolbar.captionEl.style.visibility = 'visible';
+				}.bind(this));
 			}
 			if (!this.settings.captionAndToolbarHide){
 				this.toolbar = new Toolbar.ToolbarClass(this.cache, this.settings);
@@ -470,6 +476,10 @@
 				
 				if (this.settings.jQueryMobile){
 					window.location.hash = this.settings.jQueryMobileDialogHash;
+				}
+				else if (this.settings.customHistoryHashValueFunction){
+					this.currentHistoryHashValue = this.settings.customHistoryHashValueFunction();
+					window.location.hash = this.currentHistoryHashValue;
 				}
 				else{
 					this.currentHistoryHashValue = 'PhotoSwipe' + new Date().getTime().toString();
@@ -1165,7 +1175,7 @@
 				index: e.cacheIndex
 			});
 
-			if (!Util.Browser.isTouchSupported && Util.Browser.msie8) {
+			if (Util.Browser.msie8) {
 				// IE8 workaround, as the touch events don't work
 				for (i=0, n=this.cache.images.length; i<n; i++){
 					img = this.cache.images[i].imageEl;
