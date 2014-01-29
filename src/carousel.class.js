@@ -268,19 +268,28 @@
 		/*
 		 * Function: resetImagePosition
 		 */
-		resetImagePosition: function(imageEl){
+		resetImagePosition: function(imageEl, retries){
+			retries = retries || 0;
 
 			if (Util.isNothing(imageEl)){
 				return;
 			}
 
-			var src    = Util.DOM.getAttribute(imageEl, 'src'),
+			var src	= Util.DOM.getAttribute(imageEl, 'src'),
 			    posFit = this.getImagePosition(imageEl, 'fit'),
-			    pos    = this.getImagePosition(imageEl, this.settings.imageScaleMethod);
+			    pos	= this.getImagePosition(imageEl, this.settings.imageScaleMethod);
 
-			// Do not bother calculating proper width or height at this point
-			// IE11 for example can sometimes not calculate it yet.
-			if (isNaN(posFit.width)) {
+			var isIE11 = /(?:\sTrident\/7\.0;.*\srv:11\.0)/i.test(navigator.userAgent);
+			if (isIE11 && isNaN(posFit.width)) {
+				// IE11 can require more time before it can actually 'read' the natural- width or height
+				// from image elements apparently.. so I created this very nice retry mechanism to fix it.
+				// It retries for ten more seconds (ten times)
+				if (retries < 10) {
+					setTimeout(function () {
+						retries++;
+						this.resetImagePosition(imageEl, retries);
+					}.bind(this), 1000);
+				}
 				return;
 			}
 
