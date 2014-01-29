@@ -341,6 +341,12 @@
 			this.uiLayer = new UILayer.UILayerClass(this.settings);
 			if (Util.Browser.msie8){
 				this.uiLayer.el.style.visibility = 'hidden';
+				Util.Events.add(this.carousel.el, 'click', function(e){
+					this.carousel.stopSlideshow();
+					this.toolbar.show(this.currentIndex);
+					this.toolbar.toolbarEl.style.visibility = 'visible';
+					this.toolbar.captionEl.style.visibility = 'visible';
+				}.bind(this));
 			}
 			if (!this.settings.captionAndToolbarHide){
 				this.toolbar = new Toolbar.ToolbarClass(this.cache, this.settings);
