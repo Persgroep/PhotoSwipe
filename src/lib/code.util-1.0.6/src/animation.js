@@ -133,8 +133,13 @@
 				}
 				else{
 				
-					window.jQuery(el).fadeTo(speed, 0, callback);
-				
+					if (!window.jQuery){
+						el.style.visibility = 'hidden';
+					}
+					else{
+						window.jQuery(el).fadeTo(speed, 0, callback);
+					}
+
 				}
 				
 			},
