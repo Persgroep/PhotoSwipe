@@ -244,11 +244,12 @@
 					 */
 					this.el.style.zIndex = this.settings.zIndexCarousel;
 					this.el.setAttribute('data-original-height', this.el.style.height);
-					this.el.setAttribute('data-original-top', (window.parseInt(this.el.style.top, 0) + captionHeight) + 'px');
+					this.el.setAttribute('data-original-top', (window.parseInt(this.el.style.top, 0)) + 'px');
 					this.el.style.height = (Util.DOM.height(this.el) -
 						toolbarHeight - captionHeight) + 'px';
-					this.el.style.top = (this.el.getBoundingClientRect().top +
-						captionHeight + Util.DOM.windowScrollTop()) + 'px';
+					this.el.style.top = ((window.parseInt(this.el.style.top, 0)) +
+						Util.DOM.windowScrollTop() ) + 'px';
+					this.el.style.top = (Util.DOM.windowScrollTop() + captionHeight) + 'px';
 
 					if ((toolbarHeight + captionHeight) > 0){
 						dynamicObjectEl.style.height = (Util.DOM.height(dynamicObjectEl) -
