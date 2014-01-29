@@ -277,6 +277,12 @@
 			    posFit = this.getImagePosition(imageEl, 'fit'),
 			    pos    = this.getImagePosition(imageEl, this.settings.imageScaleMethod);
 
+			// Do not bother calculating proper width or height at this point
+			// IE11 for example can sometimes not calculate it yet.
+			if (isNaN(posFit.width)) {
+				return;
+			}
+
 			imageEl.setAttribute('data-fitted-width', posFit.width);
 			imageEl.setAttribute('data-fitted-height', posFit.height);
 			imageEl.setAttribute('data-fitted-top', posFit.top);
