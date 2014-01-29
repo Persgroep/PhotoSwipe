@@ -283,12 +283,16 @@
 			if (isIE11 && isNaN(posFit.width)) {
 				// IE11 can require more time before it can actually 'read' the natural- width or height
 				// from image elements apparently.. so I created this very nice retry mechanism to fix it.
-				// It retries for ten more seconds (ten times)
+				// It retries ten times, after 100 ms, 200, 400, 800, etc...
 				if (retries < 10) {
+					var delay = 100, i;
+					for (i=0; i<retries; i++){
+						delay *= 2;
+					}
 					setTimeout(function () {
 						retries++;
 						this.resetImagePosition(imageEl, retries);
-					}.bind(this), 1000);
+					}.bind(this), delay);
 				}
 				return;
 			}
