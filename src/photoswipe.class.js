@@ -505,7 +505,8 @@
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onShow, this.toolbarShowHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onBeforeHide, this.toolbarBeforeHideHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onHide, this.toolbarHideHandler);
-				Util.Events.add(this.toolbar, Toolbar.EventTypes.onTap, this.undoVimeoFixes);
+				// Vimeo hardcoded fix disabled for the time-being. Will re-enable when retesting video.
+				// Util.Events.add(this.toolbar, Toolbar.EventTypes.onTap, this.undoVimeoFixes);
 			}
 		},
 		
