@@ -276,11 +276,18 @@
 			}
 
 			var src	= Util.DOM.getAttribute(imageEl, 'src'),
-			    posFit = this.getImagePosition(imageEl, 'fit'),
-			    pos	= this.getImagePosition(imageEl, this.settings.imageScaleMethod);
+				posFit = this.getImagePosition(imageEl, 'fit'),
+				pos	= this.getImagePosition(imageEl, this.settings.imageScaleMethod),
+				p;
 
-			var isIE11 = /(?:\sTrident\/7\.0;.*\srv:11\.0)/i.test(navigator.userAgent);
-			if (isIE11 && isNaN(posFit.width)) {
+			if (isNaN(posFit.width)) {
+				// Use fallback of 640 x 480 for image resolution.
+				for (p in [pos, posFit]) {
+					p.width = 640;
+					p.height = 480;
+					p.top = 0;
+					p.left = 0;
+				}
 				// IE11 can require more time before it can actually 'read' the natural- width or height
 				// from image elements apparently.. so I created this very nice retry mechanism to fix it.
 				// It retries ten times, after 100 ms, 200, 400, 800, etc...
@@ -296,6 +303,7 @@
 				}
 				return;
 			}
+
 
 			imageEl.setAttribute('data-fitted-width', posFit.width);
 			imageEl.setAttribute('data-fitted-height', posFit.height);
