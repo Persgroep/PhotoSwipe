@@ -141,17 +141,47 @@
 		onImageLoad: function(e){
 			
 			this.imageEl.onload = null;
-			this.imageEl.naturalWidth = Util.coalesce(this.imageEl.naturalWidth, this.imageEl.width);
-			this.imageEl.naturalHeight = Util.coalesce(this.imageEl.naturalHeight, this.imageEl.height);
-			this.imageEl.isLandscape = (this.imageEl.naturalWidth > this.imageEl.naturalHeight);
-			this.imageEl.isLoading = false;
-			
-			Util.Events.fire(this, {
-				type: PhotoSwipe.Image.EventTypes.onLoad,
-				target: this
-			});
-			
-		},
+			this.imageEl.naturalWidth = Util.coalesce(this.imageEl.naturalWidth, this.imageEl.width, parseInt(this.imageEl.style.width));
+			this.imageEl.naturalHeight = Util.coalesce(this.imageEl.naturalHeight, this.imageEl.height, parseInt(this.imageEl.style.height));
+
+			var onNaturalWidthDefined = function (img) {
+				this.imageEl.naturalWidth = img.naturalWidth;
+				this.imageEl.naturalHeight = img.naturalHeight;
+				this.imageEl.isLandscape = (this.imageEl.naturalWidth > this.imageEl.naturalHeight);
+				this.imageEl.isLoading = false;
+
+				Util.Events.fire(this, {
+					type: PhotoSwipe.Image.EventTypes.onLoad,
+					target: this
+				});
+			}.bind(this);
+
+			// Internet explorer can sometimes have naturalWidth / naturalHeight unset at this point
+			//  (even though this is the onload event). Quite possible in combination with style.display == block still being active on the image etc.
+			// So we simply create another image without any CSS to get the width/height.
+			if (isNaN(this.imageEl.naturalWidth) || this.imageEl.naturalWidth === 0) {
+				var newImg = new Image();
+				newImg.src = this.imageEl.src;
+				// Wait for image to load
+				if (newImg.complete) {
+					// Instant ready, nice
+					this.imageEl.naturalWidth = newImg.width;
+					this.imageEl.naturalHeight = newImg.height;
+				}
+				else {
+					// Not yet ready, use onload to continue processing
+					newImg.onload = function() {
+						this.imageEl.naturalWidth = newImg.width;
+						this.imageEl.naturalHeight = newImg.height;
+						onNaturalWidthDefined(this.imageEl);
+					};
+					return;
+				}
+			}
+
+			// Normal processing
+			onNaturalWidthDefined(this.imageEl);
+        },
 		
 		
 		

@@ -282,12 +282,14 @@
 
 			if (isNaN(posFit.width)) {
 				// Use fallback of 640 x 480 for image resolution.
-				for (p in [pos, posFit]) {
-					p.width = 640;
-					p.height = 480;
-					p.top = 0;
-					p.left = 0;
-				}
+				pos.width = 640;
+				pos.height = 480;
+				pos.top = 190;
+				pos.left = 200;
+				posFit.width = 640;
+				posFit.height = 480;
+				posFit.top = 190;
+				posFit.left = 200;
 				// IE11 can require more time before it can actually 'read' the natural- width or height
 				// from image elements apparently.. so I created this very nice retry mechanism to fix it.
 				// It retries ten times, after 100 ms, 200, 400, 800, etc...
