@@ -502,7 +502,7 @@
 
 				if (!this.settings.preloadNextAndPrevious){
 					cacheImages = this.cache.getImages([
-						this.currentCacheIndex,
+						this.currentCacheIndex
 					]);
 					this.addCacheImageToItemEl(cacheImages[0], itemEls[1]);
 				}
