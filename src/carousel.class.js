@@ -499,22 +499,29 @@
 				if (previousCacheIndex < 0){
 					previousCacheIndex = this.cache.images.length-1;
 				}
-				
-				cacheImages = this.cache.getImages([
-					previousCacheIndex,
-					this.currentCacheIndex,
-					nextCacheIndex
-				]);
-				
-				if (!ignoreCurrent){
-					// Current
-					this.addCacheImageToItemEl(cacheImages[1], itemEls[1]);
+
+				if (!this.settings.preloadNextAndPrevious){
+					cacheImages = this.cache.getImages([
+						this.currentCacheIndex
+					]);
+					this.addCacheImageToItemEl(cacheImages[0], itemEls[1]);
 				}
-				// Next
-				this.addCacheImageToItemEl(cacheImages[2], itemEls[2]);
-				// Previous
-				this.addCacheImageToItemEl(cacheImages[0], itemEls[0]);
-				
+				else{
+					cacheImages = this.cache.getImages([
+						previousCacheIndex,
+						this.currentCacheIndex,
+						nextCacheIndex
+					]);
+					if (!ignoreCurrent){
+						// Current
+						this.addCacheImageToItemEl(cacheImages[1], itemEls[1]);
+					}
+					// Next
+					this.addCacheImageToItemEl(cacheImages[2], itemEls[2]);
+					// Previous
+					this.addCacheImageToItemEl(cacheImages[0], itemEls[0]);
+				}
+
 			}
 			else{
 			
