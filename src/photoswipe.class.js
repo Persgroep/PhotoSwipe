@@ -175,7 +175,8 @@
 				doubleTapSpeed: 250,
 				margin: 20,
 				imageScaleMethod: 'fit', // Either "fit", "fitNoUpscale" or "zoom",
-				
+				preloadNextAndPrevious: true,
+
 				
 				// Toolbar
 				captionAndToolbarHide: false,
