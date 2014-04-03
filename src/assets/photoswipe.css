@@ -41,7 +41,7 @@ div.ps-document-overlay
 /* UILayer */
 div.ps-uilayer { 
 	
-	background: #000;
+	background: transparent;
 	cursor: pointer;
 	
 }
