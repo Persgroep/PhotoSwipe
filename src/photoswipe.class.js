@@ -56,7 +56,8 @@
 		
 		_isResettingPosition: null,
 		_uiWebViewResetPositionTimeout: null,
-				
+		lastHide : 0,
+
 		
 		/*
 		 * Function: dispose
@@ -255,9 +256,12 @@
 		 * Function: show
 		 */
 		show: function(obj){
+			var now = +new Date(), i, j, iestr, iestr2;
 
-			var i, j, iestr, iestr2;
-			
+			if (now - this.lastHide <= 500) {
+				return;
+			}
+
 			this._isResettingPosition = false;
 			this.backButtonClicked = false;
 			
@@ -567,7 +571,8 @@
 		 * Function: hide
 		 */
 		hide: function(){
-			
+			var now = +new Date();
+
 			if (this.settings.preventHide){
 				return;
 			}
@@ -619,7 +624,9 @@
 			});
 			
 			this.goBackInHistory();
-			
+
+			this.lastHide = now;
+
 		},
 		
 		
