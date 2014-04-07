@@ -37,8 +37,10 @@
 		onZoomPanRotateShow: 'PhotoSwipeOnZoomPanRotateShow',
 		onBeforeZoomPanRotateHide: 'PhotoSwipeOnBeforeZoomPanRotateHide',
 		onZoomPanRotateHide: 'PhotoSwipeOnZoomPanRotateHide',
-		onZoomPanRotateTransform: 'PhotoSwipeOnZoomPanRotateTransform'
-	
+		onZoomPanRotateTransform: 'PhotoSwipeOnZoomPanRotateTransform',
+		onAfterShow: 'PhotoSwipeOnAfterShow',
+		onAfterHide: 'PhotoSwipeOnAfterHide'
+
 	};
 	
 	
