@@ -318,6 +318,11 @@
 			} else {
 				this.documentOverlay.fadeIn(this.settings.fadeInSpeed, this.onDocumentOverlayFadeIn.bind(this));
 			}
+
+			Util.Events.fire(this, {
+				type: PhotoSwipe.EventTypes.onAfterShow,
+				target: this
+			});
 		},
 		
 		
@@ -626,6 +631,11 @@
 			this.goBackInHistory();
 
 			this.lastHide = now;
+
+			Util.Events.fire(this, {
+				type: PhotoSwipe.EventTypes.onAfterHide,
+				target: this
+			});
 
 		},
 		
