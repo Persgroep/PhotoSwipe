@@ -20,6 +20,7 @@
 		nextEl: null,
 		captionEl: null,
 		captionContentEl: null,
+		captionCloseButtonEl: null,
 		currentCaption: null,
 		settings: null,
 		cache: null,
@@ -126,14 +127,18 @@
 			if (this.settings.captionAndToolbarFlipPosition){
 				cssClass = cssClass + ' ' + PhotoSwipe.Toolbar.CssClasses.captionBottom;
 			}
-			
+			if (this.settings.captionCloseButtonEnabled){
+				cssClass = cssClass + ' ' + PhotoSwipe.Toolbar.CssClasses.captionWithCloseButton;
+			}
+
 			this.captionEl = Util.DOM.createElement(
 				'div', 
 				{ 
 					'class': cssClass
-				}, 
+				},
 				''
 			);
+
 			Util.DOM.setStyle(this.captionEl, {
 				left: 0,
 				position: 'absolute',
@@ -148,16 +153,40 @@
 				Util.DOM.appendChild(this.captionEl, this.settings.target);
 			}
 			Util.DOM.hide(this.captionEl);
-			
+
+			// Create caption content
 			this.captionContentEl = Util.DOM.createElement(
-				'div', 
+				'div',
 				{
 					'class': PhotoSwipe.Toolbar.CssClasses.captionContent
-				}, 
+				},
 				''
 			);
+
 			Util.DOM.appendChild(this.captionContentEl, this.captionEl);
-			
+
+			if (this.settings.captionCloseButtonEnabled){
+				// Create caption close button
+				this.captionCloseButtonEl = Util.DOM.createElement(
+					'div',
+					{
+						'class': PhotoSwipe.Toolbar.CssClasses.close
+					},
+					''
+				);
+				Util.DOM.appendChild(
+					Util.DOM.createElement(
+						'div',
+						{
+							'class': PhotoSwipe.Toolbar.CssClasses.toolbarContent
+						},
+						''
+					),
+					this.captionCloseButtonEl
+				);
+				Util.DOM.appendChild(this.captionCloseButtonEl, this.captionEl);
+			}
+
 			this.addEventHandlers();
 			
 		},
@@ -324,7 +353,11 @@
 				Util.Events.add(this.captionEl, 'touchmove', this.touchMoveHandler);
 			}
 			Util.Events.add(this.toolbarEl, 'click', this.clickHandler);
-		
+
+			if (this.settings.captionCloseButtonEnabled){
+				Util.Events.add(this.captionCloseButtonEl, 'click', this.clickHandler);
+			}
+
 		},
 		
 		
@@ -369,6 +402,9 @@
 				action = PhotoSwipe.Toolbar.ToolbarAction.previous;
 			}
 			else if (e.target === this.closeEl || Util.DOM.isChildOf(e.target, this.closeEl)){
+				action = PhotoSwipe.Toolbar.ToolbarAction.close;
+			}
+			else if (e.target === this.captionCloseButtonEl || Util.DOM.isChildOf(e.target, this.captionCloseButtonEl)){
 				action = PhotoSwipe.Toolbar.ToolbarAction.close;
 			}
 			else if (e.target === this.playEl || Util.DOM.isChildOf(e.target, this.playEl)){
@@ -470,8 +506,8 @@
 				return;
 			}
 			
-            if (index === 0 && index === this.cache.images.length-1){
-                if (!Util.isNothing(this.playEl)){
+			if (index === 0 && index === this.cache.images.length-1){
+				if (!Util.isNothing(this.playEl)){
 					Util.DOM.addClass(this.playEl, PhotoSwipe.Toolbar.CssClasses.playDisabled);
 				}
 			}

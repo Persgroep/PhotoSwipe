@@ -278,7 +278,9 @@
 			var src	= Util.DOM.getAttribute(imageEl, 'src'),
 				posFit = this.getImagePosition(imageEl, 'fit'),
 				pos	= this.getImagePosition(imageEl, this.settings.imageScaleMethod),
-				p;
+				p,
+				delay,
+				i;
 
 			if (isNaN(posFit.width)) {
 				// Use fallback of 640 x 480 for image resolution.
@@ -294,7 +296,7 @@
 				// from image elements apparently.. so I created this very nice retry mechanism to fix it.
 				// It retries ten times, after 100 ms, 200, 400, 800, etc...
 				if (retries < 10) {
-					var delay = 100, i;
+					delay = 100;
 					for (i=0; i<retries; i++){
 						delay *= 2;
 					}

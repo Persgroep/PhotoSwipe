@@ -141,26 +141,27 @@
 		onImageLoad: function(e){
 			
 			this.imageEl.onload = null;
-			this.imageEl.naturalWidth = Util.coalesce(this.imageEl.naturalWidth, this.imageEl.width, parseInt(this.imageEl.style.width));
-			this.imageEl.naturalHeight = Util.coalesce(this.imageEl.naturalHeight, this.imageEl.height, parseInt(this.imageEl.style.height));
+			this.imageEl.naturalWidth = Util.coalesce(this.imageEl.naturalWidth, this.imageEl.width, parseInt(this.imageEl.style.width, 10));
+			this.imageEl.naturalHeight = Util.coalesce(this.imageEl.naturalHeight, this.imageEl.height, parseInt(this.imageEl.style.height, 10));
 
 			var onNaturalWidthDefined = function (img) {
-				this.imageEl.naturalWidth = img.naturalWidth;
-				this.imageEl.naturalHeight = img.naturalHeight;
-				this.imageEl.isLandscape = (this.imageEl.naturalWidth > this.imageEl.naturalHeight);
-				this.imageEl.isLoading = false;
+					this.imageEl.naturalWidth = img.naturalWidth;
+					this.imageEl.naturalHeight = img.naturalHeight;
+					this.imageEl.isLandscape = (this.imageEl.naturalWidth > this.imageEl.naturalHeight);
+					this.imageEl.isLoading = false;
 
-				Util.Events.fire(this, {
-					type: PhotoSwipe.Image.EventTypes.onLoad,
-					target: this
-				});
-			}.bind(this);
+					Util.Events.fire(this, {
+						type: PhotoSwipe.Image.EventTypes.onLoad,
+						target: this
+					});
+				}.bind(this),
+				newImg = null;
 
 			// Internet explorer can sometimes have naturalWidth / naturalHeight unset at this point
 			//  (even though this is the onload event). Quite possible in combination with style.display == block still being active on the image etc.
 			// So we simply create another image without any CSS to get the width/height.
 			if (isNaN(this.imageEl.naturalWidth) || this.imageEl.naturalWidth === 0) {
-				var newImg = new Image();
+				newImg = new Image();
 				newImg.src = this.imageEl.src;
 				// Wait for image to load
 				if (newImg.complete) {
