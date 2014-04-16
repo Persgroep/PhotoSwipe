@@ -14,6 +14,7 @@
 		toolbarContent: 'ps-toolbar-content',
 		toolbarTop: 'ps-toolbar-top',
 		caption: 'ps-caption',
+		captionWithCloseButton: 'ps-caption-with-close-button',
 		captionBottom: 'ps-caption-bottom',
 		captionContent: 'ps-caption-content',
 		close: 'ps-toolbar-close',

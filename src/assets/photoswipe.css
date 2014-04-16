@@ -77,6 +77,7 @@ div.ps-caption
 	font-size: 13px;
 	font-family: "Lucida Grande", Helvetica, Arial,Verdana, sans-serif;
 	text-align: center;
+	display: table-row;
 }
 div.ps-caption *  { display: inline; }
 
@@ -93,6 +94,14 @@ div.ps-caption-content
 	display: block;
 }
 
+div.ps-caption div.ps-caption-content {
+	width: 100%;
+	vertical-align: middle;
+}
+
+div.ps-caption.ps-caption-with-close-button div.ps-caption-content {
+	display: table-cell;
+}
 
 /* Toolbar */
 div.ps-toolbar
@@ -125,7 +134,12 @@ div.ps-toolbar-close, div.ps-toolbar-previous, div.ps-toolbar-next, div.ps-toolb
 	display: table-cell;
 }
 
-div.ps-toolbar div div.ps-toolbar-content
+div.ps-caption div div.ps-toolbar-content
+{
+    display: block;
+}
+
+div div div.ps-toolbar-content
 {
 	width: 44px;
 	height: 44px;

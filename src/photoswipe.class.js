@@ -163,6 +163,7 @@
 				target: window,
 				preventDefaultTouchEvents: true,
 				allowVerticalScroll:false,
+				captionCloseButtonEnabled: false,
 				
 				// Carousel
 				loop: true,
