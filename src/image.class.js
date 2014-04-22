@@ -132,30 +132,38 @@
 			}
 		
 		},
-		
-		
-		
+
 		/*
 		 * Function: onImageLoad
 		 */
 		onImageLoad: function(e){
 			
 			this.imageEl.onload = null;
-			this.imageEl.naturalWidth = Util.coalesce(this.imageEl.naturalWidth, this.imageEl.width, parseInt(this.imageEl.style.width, 10));
-			this.imageEl.naturalHeight = Util.coalesce(this.imageEl.naturalHeight, this.imageEl.height, parseInt(this.imageEl.style.height, 10));
+			this.imageEl.naturalWidth = Util.coalesce(
+				this.imageEl.naturalWidth,
+				this.imageEl.width,
+				parseInt(this.imageEl.style.width, 10)
+			);
+			this.imageEl.naturalHeight = Util.coalesce(
+				this.imageEl.naturalHeight,
+				this.imageEl.height,
+				parseInt(this.imageEl.style.height, 10)
+			);
 
-			var onNaturalWidthDefined = function (img) {
-					this.imageEl.naturalWidth = img.naturalWidth;
-					this.imageEl.naturalHeight = img.naturalHeight;
-					this.imageEl.isLandscape = (this.imageEl.naturalWidth > this.imageEl.naturalHeight);
-					this.imageEl.isLoading = false;
+			var newImg = null;
 
-					Util.Events.fire(this, {
-						type: PhotoSwipe.Image.EventTypes.onLoad,
-						target: this
-					});
-				}.bind(this),
-				newImg = null;
+			// If natural width is defined, update isLandscape, isLoading flag, and fire event that image is loaded.
+			function onNaturalWidthDefined(img) {
+				this.imageEl.naturalWidth = img.naturalWidth;
+				this.imageEl.naturalHeight = img.naturalHeight;
+				this.imageEl.isLandscape = (this.imageEl.naturalWidth > this.imageEl.naturalHeight);
+				this.imageEl.isLoading = false;
+
+				Util.Events.fire(this, {
+					type: PhotoSwipe.Image.EventTypes.onLoad,
+					target: this
+				});
+			};
 
 			// Internet explorer can sometimes have naturalWidth / naturalHeight unset at this point
 			//  (even though this is the onload event). Quite possible in combination with style.display == block still being active on the image etc.
