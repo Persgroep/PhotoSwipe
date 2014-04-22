@@ -7,8 +7,13 @@ VERSION=3.0.5.1
 DEST=/projects/autotrack
 
 cp -prv ./release/$VERSION/code.photoswipe.klass-$VERSION.min.js   $DEST/public/scripts/at/image/photoswipe/impl.js
-cp -prv ./release/$VERSION/code.photoswipe.klass-$VERSION.js       $DEST/public/scripts-src/at/image/photoswipe/impl.js
+dos2unix                                                           $DEST/public/scripts/at/image/photoswipe/impl.js
+# the massive sed's are for replacing leading tabs to four spaces
+#cp -prv ./release/$VERSION/code.photoswipe.klass-$VERSION.js       $DEST/public/scripts-src/at/image/photoswipe/impl.js
+cat     ./release/$VERSION/code.photoswipe.klass-$VERSION.js |sed ':a;s/^\([[:space:]]*\)[[:space:]]/\1__@__/;ta'|sed 's/__@__/    /g' | sed 's/[ \t]*$//' > $DEST/public/scripts-src/at/image/photoswipe/impl.js
+dos2unix                                                           $DEST/public/scripts-src/at/image/photoswipe/impl.js
 cp -prv ./release/$VERSION/photoswipe.css                          $DEST/public/css/photoswipe.css
+
 cp -prv ./release/$VERSION/icons.png                               $DEST/public/gfx/layout/photoswipe/icons.png
 optipng -o7                                                        $DEST/public/gfx/layout/photoswipe/icons.png
 cp -prv ./release/$VERSION/icons-2x.png                            $DEST/public/gfx/layout/photoswipe/icons-2x.png
