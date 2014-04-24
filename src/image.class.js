@@ -182,15 +182,15 @@
 					newImg.onload = function() {
 						this.imageEl.naturalWidth = newImg.width;
 						this.imageEl.naturalHeight = newImg.height;
-						onNaturalWidthDefined(this.imageEl);
+						onNaturalWidthDefined.bind(this)(this.imageEl);
 					};
 					return;
 				}
 			}
 
 			// Normal processing
-			onNaturalWidthDefined(this.imageEl);
-        },
+			onNaturalWidthDefined.bind(this)(this.imageEl);
+		},
 		
 		
 		
