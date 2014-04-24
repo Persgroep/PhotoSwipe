@@ -136,7 +136,8 @@ div.ps-toolbar-close, div.ps-toolbar-previous, div.ps-toolbar-next, div.ps-toolb
 
 div.ps-caption div div.ps-toolbar-content
 {
-    display: block;
+	display: block;
+	margin-right: 2cm;
 }
 
 div div div.ps-toolbar-content
