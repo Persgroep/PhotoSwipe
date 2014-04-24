@@ -137,7 +137,7 @@ div.ps-toolbar-close, div.ps-toolbar-previous, div.ps-toolbar-next, div.ps-toolb
 div.ps-caption div div.ps-toolbar-content
 {
 	display: block;
-	margin-right: 2cm;
+	margin-right: 1.5em;
 }
 
 div div div.ps-toolbar-content
@@ -188,7 +188,7 @@ div.ps-toolbar-play-disabled div.ps-toolbar-content
        only screen and (-moz-min-device-pixel-ratio: 1.5),
        only screen and (min-resolution: 240dpi)
 {
-	div.ps-toolbar div div.ps-toolbar-content
+	div div div.ps-toolbar-content
 	{
 		-moz-background-size: 176px 88px;
 		-o-background-size: 176px 88px;
