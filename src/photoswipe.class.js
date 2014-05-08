@@ -208,12 +208,12 @@
 				// Video providers
 				videoProviders:{
 					youtube:{
-						regex: /(?:http:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
+						regex: /(?:http(s?):\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
 						embedcode: '<iframe width="420" height="345" src="http://www.youtube.com/embed/$1?autoplay=1"' +
 							' frameborder="0" allowfullscreen></iframe>'
 					},
 					vimeo:{
-						regex: /(?:http:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g,
+						regex: /(?:http(s?):\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g,
 						embedcode: '<iframe src="//player.vimeo.com/video/$1?color=f2e81f&amp;autoplay=1" width="500"' +
 							' height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
 							'</iframe>'
