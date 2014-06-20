@@ -163,7 +163,7 @@
 					type: PhotoSwipe.Image.EventTypes.onLoad,
 					target: this
 				});
-			};
+			}
 
 			// Internet explorer can sometimes have naturalWidth / naturalHeight unset at this point
 			//  (even though this is the onload event). Quite possible in combination with style.display == block still being active on the image etc.
