@@ -110,7 +110,7 @@
 			this.imageEl.originalSrc = this.src;
 			this.imageEl.src = this.src;
 			this.imageEl.setAttribute('data-video', video);
-
+			this.videoPlayButtonLayOver(video);
 		},
 		
 		
@@ -131,6 +131,22 @@
 				}
 			}
 		
+		},
+
+		/*
+		 * Function: create a playbutton layover for the large video preview image
+		 */
+		videoPlayButtonLayOver: function(video) {
+
+			if (video) {
+				//Add overlay for the video image
+				dojo.style(this.imageEl, {backgroundImage: "url(" + this.imageEl.src + ")"});
+				dojo.style(this.imageEl, {backgroundPosition: "center"});
+				dojo.style(this.imageEl, {backgroundRepeat: "no-repeat"});
+
+				this.imageEl.originalSrc="/gfx/layout/playButtonLarge.png";
+				this.imageEl.src="/gfx/layout/playButtonLarge.png";
+			}
 		},
 
 		/*
