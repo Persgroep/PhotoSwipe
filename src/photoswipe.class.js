@@ -51,7 +51,7 @@
 		mouseWheelHandler: null,
 		zoomPanRotateTransformHandler: null,
 		videoThumbToEmbedCodeHandler: null,
-		undoVimeoFixes : null,
+		restoreUiLayerOnTopOfCarousel : null,
 
 		
 		_isResettingPosition: null,
@@ -150,7 +150,6 @@
 				preventHide: false,
 				preventSlideshow: false,
 				zIndex: 1000,
-				zIndexCarousel: 1001,
 				backButtonHideEnabled: true,
 				enableKeyboard: true,
 				enableMouseWheel: true,
@@ -208,12 +207,12 @@
 				// Video providers
 				videoProviders:{
 					youtube:{
-						regex: /(?:http:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
+						regex: /(?:http(s?):\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g,
 						embedcode: '<iframe width="420" height="345" src="http://www.youtube.com/embed/$1?autoplay=1"' +
 							' frameborder="0" allowfullscreen></iframe>'
 					},
 					vimeo:{
-						regex: /(?:http:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g,
+						regex: /(?:http(s?):\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g,
 						embedcode: '<iframe src="//player.vimeo.com/video/$1?color=f2e81f&amp;autoplay=1" width="500"' +
 							' height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>' +
 							'</iframe>'
@@ -453,7 +452,7 @@
 				this.mouseWheelHandler = this.onMouseWheel.bind(this);
 				this.zoomPanRotateTransformHandler = this.onZoomPanRotateTransform.bind(this);
 				this.videoThumbToEmbedCodeHandler = this.onTouchVideoThumbToEmbedCode.bind(this);
-				this.undoVimeoFixes = this.onToolbarClickUndoVimeoFixes.bind(this);
+				this.restoreUiLayerOnTopOfCarousel = this.onToolbarClickRestoreUiLayerOnTopOfCarousel.bind(this);
 			}
 			
 			// Set window handlers
@@ -516,8 +515,6 @@
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onShow, this.toolbarShowHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onBeforeHide, this.toolbarBeforeHideHandler);
 				Util.Events.add(this.toolbar, Toolbar.EventTypes.onHide, this.toolbarHideHandler);
-				// Vimeo hardcoded fix disabled for the time-being. Will re-enable when retesting video.
-				// Util.Events.add(this.toolbar, Toolbar.EventTypes.onTap, this.undoVimeoFixes);
 			}
 		},
 		
@@ -700,7 +697,9 @@
 		 * Function: previous
 		 */
 		previous: function(){
-			
+
+			this.restoreUiLayerOnTopOfCarousel();
+
 			if (this.isZoomActive()){
 				return;
 			}
@@ -717,7 +716,9 @@
 		 * Function: next
 		 */
 		next: function(){
-			
+
+			this.restoreUiLayerOnTopOfCarousel();
+
 			if (this.isZoomActive()){
 				return;
 			}
@@ -1416,7 +1417,7 @@
 
 			// Put iframe before the image, and hide the image
 			parent.removeChild(cacheImage.imageEl);
-			parent.innerHTML = div.innerHTML;
+			parent.appendChild(div.firstChild);
 			parent.appendChild(cacheImage.imageEl);
 
 			// Make sure the positions are updated correctly
@@ -1432,7 +1433,16 @@
 
 		},
 
-		onToolbarClickUndoVimeoFixes: function(e){
+		/**
+		 * This function is used to "undo" the changes made in the Carousel code with
+		 * makeCarouselWithVideoOnTopOfUiLayer. In that function the carousel zIndex and it's height were changed
+		 * temporarily.
+		 *
+		 * This function is triggered in the next & previous events/functions.
+		 *
+		 * @param e
+		 */
+		onToolbarClickRestoreUiLayerOnTopOfCarousel: function(e){
 			var originalTop = this.carousel.el.getAttribute('data-original-top'),
 				originalHeight = this.carousel.el.getAttribute('data-original-height');
 
