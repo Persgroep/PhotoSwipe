@@ -167,8 +167,7 @@
 		 */
 		resetPosition: function(){
 
-			var width, height, top, itemWidth, itemEls, contentWidth, i, j, itemEl, imageEl, dynamicObjectEl,
-				toolbar = this.toolbarRef.toolbarEl, caption = this.toolbarRef.captionEl, toolbarHeight, captionHeight;
+			var width, height, top, itemWidth, itemEls, contentWidth, i, j, itemEl, imageEl, dynamicObjectEl;
 
 			if (this.settings.target === window){
 				width = Util.DOM.windowWidth();
@@ -233,28 +232,7 @@
 					dynamicObjectEl.style.display = 'block';
 					imageEl.style.display = 'none';
 
-					toolbarHeight = Util.DOM.height(toolbar) + 5;
-					captionHeight = Util.DOM.height(caption) + 5;
-
-					/**
-					 * The Vimeo player requires the carousel to be above the toolbar and caption w/regards to zIndex.
-					 * Or otherwise the events on the player are not triggered.
-					 * Making the carousel on top, makes the toolbar and caption events malfunction however, so we
-					 * make the height of the carousel a little less, so the events propagate to the toolbar.
-					 */
-					this.el.style.zIndex = this.settings.zIndexCarousel;
-					this.el.setAttribute('data-original-height', this.el.style.height);
-					this.el.setAttribute('data-original-top', (window.parseInt(this.el.style.top, 0)) + 'px');
-					this.el.style.height = (Util.DOM.height(this.el) -
-						toolbarHeight - captionHeight) + 'px';
-					this.el.style.top = ((window.parseInt(this.el.style.top, 0)) +
-						Util.DOM.windowScrollTop() ) + 'px';
-					this.el.style.top = (Util.DOM.windowScrollTop() + captionHeight) + 'px';
-
-					if ((toolbarHeight + captionHeight) > 0){
-						dynamicObjectEl.style.height = (Util.DOM.height(dynamicObjectEl) -
-							toolbarHeight - captionHeight) + 'px';
-					}
+					this.makeCarouselWithVideoOnTopOfUiLayer(dynamicObjectEl);
 				}
 			}
 
@@ -263,8 +241,51 @@
 
 		},
 
-		
-		
+		/**
+		 * This function is used to make the Carousel temporarily "on top", meaning with a higher zIndex
+		 * than the uiLayer.
+		 * It reduces the carousel's height just enough to make the toolbar (part of the uiLayer, which is
+		 *  underneath the Carousel after the zIndex change) still clickable.
+		 *
+		 * Motivation for these fixes was the Vimeo player, where you can't interact with the player otherwise.
+		 * Note that it is applied for all video types though.
+		 *
+		 * In the PhotoSwipeClass these fixes are "undone" with restoreUiLayerOnTopOfCarousel
+		 *
+		 * This function is triggered when the video element is enabled.
+		 *
+		 * @param dynamicObjectEl
+		 */
+		makeCarouselWithVideoOnTopOfUiLayer : function (dynamicObjectEl)
+		{
+			var toolbar = this.toolbarRef.toolbarEl,
+				caption = this.toolbarRef.captionEl,
+				toolbarHeight = Util.DOM.height(toolbar) + 5,
+				captionHeight = Util.DOM.height(caption) + 5;
+
+			/**
+			 * The Vimeo player requires the carousel to be above the toolbar and caption w/regards to zIndex.
+			 * Or otherwise the events on the player are not triggered.
+			 * Making the carousel on top, makes the toolbar and caption events malfunction however, so we
+			 * make the height of the carousel a little less, so the events propagate to the toolbar.
+			 */
+			this.el.style.zIndex = this.settings.zIndex + 1;
+			this.el.setAttribute('data-original-height', this.el.style.height);
+			this.el.setAttribute('data-original-top', (window.parseInt(this.el.style.top, 0)) + 'px');
+			this.el.style.height = (Util.DOM.height(this.el) -
+				toolbarHeight - captionHeight) + 'px';
+			this.el.style.top = ((window.parseInt(this.el.style.top, 0)) +
+				Util.DOM.windowScrollTop() ) + 'px';
+			this.el.style.top = (Util.DOM.windowScrollTop() + captionHeight) + 'px';
+
+			if ((toolbarHeight + captionHeight) > 0){
+				dynamicObjectEl.style.height = (Util.DOM.height(dynamicObjectEl) -
+					toolbarHeight - captionHeight) + 'px';
+			}
+		},
+
+
+
 		/*
 		 * Function: resetImagePosition
 		 */

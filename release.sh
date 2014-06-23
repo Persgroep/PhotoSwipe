@@ -6,6 +6,23 @@
 VERSION=3.0.5.1
 DEST=/projects/autotrack
 
+if ! [ "$(which dos2unix)" ]; then
+    echo dos2unix not found..
+    exit
+fi
+if ! [ "$(which optipng)" ]; then
+    echo optipng not found..
+    exit
+fi
+if ! [ "$(which gifsicle)" ]; then
+    echo gifsicle not found..
+    exit
+fi
+if ! [ "$(which sed)" ]; then
+    echo sed not found..
+    exit
+fi
+
 cp -prv ./release/$VERSION/code.photoswipe.klass-$VERSION.min.js   $DEST/public/scripts/at/image/photoswipe/impl.js
 dos2unix                                                           $DEST/public/scripts/at/image/photoswipe/impl.js
 # the massive sed's are for replacing leading tabs to four spaces
